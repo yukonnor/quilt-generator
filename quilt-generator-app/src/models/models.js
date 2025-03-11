@@ -12,7 +12,7 @@ export class Piece {
     this.block_pos = block_pos; // [r, c]
     this.width = width;
     this.rotation = rotation; // 0, 1, 2, 3
-    this.color = color; // [dark color, light color]
+    this.color = color; // [light color, dark color]
 
     this.rect = this.create_rect();
     this.x = this.rect.left;
@@ -46,35 +46,184 @@ export class Piece {
     return rect;
   }
 
-  draw(p) {
+  draw(p, provided_rect = null) {
     // console.log("Drawing piece");
-    if (this.type === "full_dark") {
-      p.fill(this.color[0]);
-      p.rect(this.x, this.y, this.width, this.width);
-    } else if (this.type === "full_light") {
-      p.fill(this.color[1]);
-      p.rect(this.x, this.y, this.width, this.width);
-    } else if (this.type === "diagonal") {
-      // Draw two triangles for diagonal split
-      p.fill(this.color[0]);
-      p.triangle(
-        this.x,
-        this.y,
-        this.x + this.width,
-        this.y,
-        this.x,
-        this.y + this.width
-      );
 
+    // If rect provided, use it. Otherwise use default rect.
+    let rect = provided_rect ? provided_rect : this.rect;
+
+    if (this.type === "full_dark") {
       p.fill(this.color[1]);
-      p.triangle(
-        this.x + this.width,
-        this.y,
-        this.x + this.width,
-        this.y + this.width,
-        this.x,
-        this.y + this.width
-      );
+      p.rect(rect.left, rect.top, rect.width, rect.width);
+    } else if (this.type === "full_light") {
+      p.fill(this.color[0]);
+      p.rect(rect.left, rect.top, rect.width, rect.width);
+    } else if (this.type === "diagonal") {
+      this.drawDiagonal(p, rect);
     }
+  }
+
+  drawDiagonal(p, rect) {
+    const { left, right, top, bottom, width, height } = rect;
+
+    const diagonalPatterns = {
+      // [x1, y1, x2, y2, x3, y3]
+      top_left: [left, top, right, top, left, bottom], //         |*/
+      top_right: [left, top, right, top, right, bottom], //       \*|
+      bottom_right: [left, bottom, right, top, right, bottom], // /*|
+      bottom_left: [left, top, right, bottom, left, bottom], //   |*\
+    };
+
+    const rotationPatterns = {
+      // 0: light / dark
+      0: {
+        light: diagonalPatterns["top_left"],
+        dark: diagonalPatterns["bottom_right"],
+      },
+      // 1: dark \ light
+      1: {
+        light: diagonalPatterns["top_right"],
+        dark: diagonalPatterns["bottom_left"],
+      },
+      // 2:  dark / light
+      2: {
+        light: diagonalPatterns["bottom_right"],
+        dark: diagonalPatterns["top_left"],
+      },
+      // 3:  light \ dark
+      3: {
+        light: diagonalPatterns["bottom_left"],
+        dark: diagonalPatterns["top_right"],
+      },
+    };
+
+    // Translate piece rotation type to x,y coords.
+    let lightTriCoordArray = rotationPatterns[this.rotation].light;
+    let darkTriCoordArray = rotationPatterns[this.rotation].dark;
+
+    // draw light triange
+    p.fill(this.color[0]);
+    p.triangle(...lightTriCoordArray);
+
+    // draw dark triange
+    p.fill(this.color[1]);
+    p.triangle(...darkTriCoordArray);
+  }
+}
+
+export class Block {
+  constructor(rows = 8, cols = 8, x = 0, y = 0, pieceWidth = 50) {
+    this.rows = rows;
+    this.cols = cols;
+    this.x = x;
+    this.y = y;
+    this.pieceWidth = pieceWidth;
+    this.mirrorType = 2; // Available: 0, 1
+
+    this.pieces = this.initBlock(); // create an empty 2D array to store pieces
+    this.randRotationOptions = [0, 1, 2, 3];
+    this.width = this.cols * pieceWidth;
+    this.height = this.rows * pieceWidth;
+  }
+
+  initBlock() {
+    // Create an empty 2D array of placeholder pieces
+    let pieces = [];
+    for (let r = 0; r < this.rows; r++) {
+      pieces.push([]);
+      for (let c = 0; c < this.cols; c++) {
+        pieces[r].push(new Piece("placeholder", [this.x, this.y], [r, c]));
+      }
+    }
+    return pieces;
+  }
+
+  mirrorPieces() {
+    /**
+     * Mirrors the pieces set in the top-left quadrant to the other quadrants
+     * of the block based on the mirror type.
+     */
+
+    const mirrorTypeTransformations = [
+      // Mirror Type 0 (duplicate)
+      [
+        [(r, c) => [r, c + this.cols / 2], { 0: 0, 1: 1, 2: 2, 3: 3 }], // Top-right
+        [(r, c) => [r + this.rows / 2, c], { 0: 0, 1: 1, 2: 2, 3: 3 }], // Bottom-left
+        [
+          (r, c) => [r + this.rows / 2, c + this.cols / 2],
+          { 0: 0, 1: 1, 2: 2, 3: 3 },
+        ], // Bottom-right
+      ],
+      // Mirror Type 1 (classic mirror)
+      [
+        [(r, c) => [r, this.cols - 1 - c], { 0: 1, 1: 0, 2: 3, 3: 2 }], // Top-right
+        [(r, c) => [this.rows - 1 - r, c], { 0: 3, 1: 2, 2: 1, 3: 0 }], // Bottom-left
+        [
+          (r, c) => [this.rows - 1 - r, this.cols - 1 - c],
+          { 0: 2, 1: 3, 2: 0, 3: 1 },
+        ], // Bottom-right
+      ],
+    ];
+
+    for (let r = 0; r < this.rows / 2; r++) {
+      for (let c = 0; c < this.cols / 2; c++) {
+        for (let [transform, rotationMap] of mirrorTypeTransformations[
+          this.mirrorType
+        ]) {
+          let [newR, newC] = transform(r, c);
+          this._mirrorPiece(r, c, newR, newC, rotationMap);
+        }
+      }
+    }
+  }
+
+  _mirrorPiece(srcR, srcC, destR, destC, rotationMap) {
+    let piece = this.pieces[srcR][srcC];
+    let newRotation = rotationMap[piece.rotation];
+
+    this.pieces[destR][destC] = new Piece(
+      piece.type,
+      [this.x, this.y],
+      [destR, destC],
+      piece.width,
+      newRotation,
+      piece.color
+    );
+  }
+
+  updateMirrorType(newMirrorType) {
+    /**
+     * Updates the mirror type and redraws the block.
+     */
+    this.mirrorType = newMirrorType;
+    this.mirrorPieces();
+  }
+
+  randomFill(darkColor, lightColor) {
+    /**
+     * Fill the top left quadrant of the block with random pieces, based on current color settings.
+     * The top left quadrant will then be mirrored to fill in the rest of the block.
+     */
+    for (let r = 0; r < this.rows / 2; r++) {
+      for (let c = 0; c < this.cols / 2; c++) {
+        let pieceType = ["full_dark", "full_light", "diagonal"][
+          Math.floor(Math.random() * 3)
+        ];
+        let rotation =
+          this.randRotationOptions[
+            Math.floor(Math.random() * this.randRotationOptions.length)
+          ];
+
+        this.pieces[r][c] = new Piece(
+          pieceType,
+          [this.x, this.y],
+          [r, c],
+          this.pieceWidth,
+          rotation,
+          [lightColor, darkColor]
+        );
+      }
+    }
+    this.mirrorPieces();
   }
 }
