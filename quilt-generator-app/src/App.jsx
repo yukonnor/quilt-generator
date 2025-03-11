@@ -12,7 +12,7 @@ import SketchInputs from "./components/SketchInputs";
 import P5Wrapper from "./components/P5Wrapper";
 
 // Import sketches
-import quiltGenerator from "./quilt-generator-p5-sketch";
+import quiltCanvas from "./quilt-canvas";
 
 const sketchParams = {
   radius: {
@@ -50,7 +50,7 @@ function App() {
             <SketchInputs params={params} onParamChange={handleParamChange} />
           </Grid>
           <Grid size={8}>
-            <P5Wrapper sketch={quiltGenerator} params={params} />
+            <P5Wrapper sketch={quiltCanvas} params={params} />
           </Grid>
         </Grid>
       </Box>
