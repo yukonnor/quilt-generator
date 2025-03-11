@@ -1,3 +1,10 @@
+import {
+  DARK_COLORS,
+  LIGHT_COLORS,
+  BLOCK_POS_OFFSET,
+  QUILT_SCALE,
+} from "./constants";
+
 export class Piece {
   constructor(
     type = "placeholder",
@@ -52,11 +59,18 @@ export class Piece {
     // If rect provided, use it. Otherwise use default rect.
     let rect = provided_rect ? provided_rect : this.rect;
 
-    if (this.type === "full_dark") {
+    if (this.type === "placeholder") {
+      p.noFill();
+      p.stroke(255, 204, 0); // RGB: Yellow   TODO: Use variable
+      p.strokeWeight(2);
+      p.rect(rect.left, rect.top, rect.width, rect.width);
+    } else if (this.type === "full_dark") {
       p.fill(this.color[1]);
+      p.noStroke();
       p.rect(rect.left, rect.top, rect.width, rect.width);
     } else if (this.type === "full_light") {
       p.fill(this.color[0]);
+      p.noStroke();
       p.rect(rect.left, rect.top, rect.width, rect.width);
     } else if (this.type === "diagonal") {
       this.drawDiagonal(p, rect);
@@ -103,11 +117,38 @@ export class Piece {
 
     // draw light triange
     p.fill(this.color[0]);
+    p.noStroke();
     p.triangle(...lightTriCoordArray);
 
     // draw dark triange
     p.fill(this.color[1]);
+    p.noStroke();
     p.triangle(...darkTriCoordArray);
+  }
+
+  drawAt(p, x, y, drawMode = "design") {
+    // Draw a piece at a specific temporary location.
+
+    // Ensure integer values for width based on draw mode
+    const newWidth =
+      drawMode === "design"
+        ? Math.round(this.width)
+        : Math.round(this.width * QUILT_SCALE);
+    const newX = Math.round(x);
+    const newY = Math.round(y);
+
+    // Create a temporary rectangle for drawing
+    const tempRect = {
+      left: newX,
+      right: newX + newWidth,
+      top: newY,
+      bottom: newY + newWidth,
+      width: newWidth,
+      height: newWidth,
+    };
+
+    // Pass the temp_rect to the draw function
+    this.draw(p, tempRect);
   }
 }
 
@@ -120,14 +161,14 @@ export class Block {
     this.pieceWidth = pieceWidth;
     this.mirrorType = 2; // Available: 0, 1
 
-    this.pieces = this.initBlock(); // create an empty 2D array to store pieces
+    this.pieces = this.initBlock(); // create a 2D array of placeholder pieces
     this.randRotationOptions = [0, 1, 2, 3];
     this.width = this.cols * pieceWidth;
     this.height = this.rows * pieceWidth;
   }
 
   initBlock() {
-    // Create an empty 2D array of placeholder pieces
+    // Create a 2D array of placeholder pieces
     let pieces = [];
     for (let r = 0; r < this.rows; r++) {
       pieces.push([]);
@@ -225,5 +266,16 @@ export class Block {
       }
     }
     this.mirrorPieces();
+  }
+
+  draw_design_mode(p) {
+    // Draw a large single block for editing.
+    for (let row = 0; row < this.rows; row++) {
+      for (let col = 0; col < this.cols; col++) {
+        const piece_x = this.x + col * this.pieceWidth;
+        const piece_y = this.y + row * this.pieceWidth;
+        this.pieces[row][col].drawAt(p, piece_x, piece_y, "design");
+      }
+    }
   }
 }

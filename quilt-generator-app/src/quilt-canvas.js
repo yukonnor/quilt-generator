@@ -1,10 +1,12 @@
-import { Piece } from "./models/models";
+import { Piece, Block } from "./models/models";
 
 const quiltCanvas = (p) => {
   let piece;
   let piece1;
   let piece2;
   let piece3;
+
+  let block;
 
   p.setup = () => {
     p.createCanvas(800, 800);
@@ -13,6 +15,7 @@ const quiltCanvas = (p) => {
     piece1 = new Piece("diagonal", [50, 50], [0, 1], 100, 1, ["blue", "red"]); // Added size
     piece2 = new Piece("diagonal", [50, 50], [1, 0], 100, 2, ["blue", "red"]); // Added size
     piece3 = new Piece("diagonal", [50, 50], [1, 1], 100, 3, ["blue", "red"]); // Added size
+    block = new Block(4, 4, 450, 450, 25);
   };
 
   p.draw = () => {
@@ -20,6 +23,8 @@ const quiltCanvas = (p) => {
     piece1.draw(p); // Pass `p` instance to Piece
     piece2.draw(p); // Pass `p` instance to Piece
     piece3.draw(p); // Pass `p` instance to Piece
+
+    block.draw_design_mode(p);
   };
 };
 
