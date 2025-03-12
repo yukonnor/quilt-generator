@@ -20,21 +20,42 @@ const quiltCanvas = (p) => {
     p.background(25);
 
     if (mode === "design") {
-      block.draw_design_mode(p);
+      block.drawDesignMode(p);
     }
 
     if (mode === "quilt_preview") {
-      block.draw_quilt_mode(p, 5, 4);
+      block.drawQuiltMode(p, 5, 4);
     }
   };
 
   p.keyReleased = () => {
+    // RANDOM FILL
+    if (p.keyCode === p.ENTER) {
+      block.randomFill("green", "blue");
+    }
+    // SWITCH MODES
     if (p.key === "q") {
       mode = mode === "design" ? "quilt_preview" : "design";
     }
-
-    if (p.keyCode === p.ENTER) {
-      block.randomFill("green", "blue");
+    // SWITCH MIRROR TYPES
+    if (p.key === "z") {
+      block.updateMirrorType(0);
+    }
+    if (p.key === "x") {
+      block.updateMirrorType(1);
+    }
+    if (p.key === "c") {
+      block.updateMirrorType(2);
+    }
+    if (p.key === "v") {
+      block.updateMirrorType(3);
+    }
+    if (p.key === "b") {
+      block.updateMirrorType(4);
+    }
+    // INVERT COLORS
+    if (p.key === "i") {
+      block.invertColors();
     }
   };
 };

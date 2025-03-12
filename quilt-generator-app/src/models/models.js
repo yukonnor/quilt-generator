@@ -274,7 +274,7 @@ export class Block {
     this.mirrorPieces();
   }
 
-  invert_colors() {
+  invertColors() {
     // Inverts the colors of the block pieces, keeping the same block design.
     for (let row = 0; row < this.rows; row++) {
       for (let col = 0; col < this.cols; col++) {
@@ -285,7 +285,7 @@ export class Block {
     }
   }
 
-  update_piece_colors(newLightColor, newDarkColor) {
+  updatePieceColors(newLightColor, newDarkColor) {
     // Updates the colors of all of the pieces in the block.
     for (let row = 0; row < this.rows; row++) {
       for (let col = 0; col < this.cols; col++) {
@@ -295,7 +295,7 @@ export class Block {
     }
   }
 
-  draw_design_mode(p) {
+  drawDesignMode(p) {
     // Draw a large single block for editing.
     for (let row = 0; row < this.rows; row++) {
       for (let col = 0; col < this.cols; col++) {
@@ -306,7 +306,7 @@ export class Block {
     }
   }
 
-  draw_quilt_mode(p, quiltRows, quiltCols) {
+  drawQuiltMode(p, quiltRows, quiltCols) {
     // Draws multiple smaller copies of this block to form a repeating quilt pattern."""
     const quiltX = QUILT_COORDS[0];
     const quiltY = QUILT_COORDS[1];

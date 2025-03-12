@@ -5,6 +5,7 @@ import CardContent from "@mui/material/CardContent";
 import Slider from "@mui/material/Slider";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import { Tooltip } from "@mui/material";
 import ColorInput from "./ColorInput";
 
 const SketchInputs = ({ params, onParamChange }) => {
@@ -31,19 +32,21 @@ const SketchInputs = ({ params, onParamChange }) => {
         />
 
         {/* randomFill */}
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            if (params.randomFill) {
-              params.randomFill(); // Call randomFill if it exists
-            } else {
-              console.log("randomFill function doesn't exist yet...");
-            }
-          }}
-        >
-          Randomize!
-        </Button>
+        <Tooltip title="Shortcut: ENTER">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              if (params.randomFill) {
+                params.randomFill(); // Call randomFill if it exists
+              } else {
+                console.log("randomFill function doesn't exist yet...");
+              }
+            }}
+          >
+            Randomize!
+          </Button>
+        </Tooltip>
       </CardContent>
     </Card>
   );
