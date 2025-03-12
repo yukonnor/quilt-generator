@@ -15,7 +15,9 @@ const quiltCanvas = (p) => {
     piece1 = new Piece("diagonal", [50, 50], [0, 1], 100, 1, ["blue", "red"]); // Added size
     piece2 = new Piece("diagonal", [50, 50], [1, 0], 100, 2, ["blue", "red"]); // Added size
     piece3 = new Piece("diagonal", [50, 50], [1, 1], 100, 3, ["blue", "red"]); // Added size
-    block = new Block(4, 4, 450, 450, 25);
+    block = new Block(8, 8, 450, 450, 25);
+    block.randomFill("green", "blue");
+    block.mirrorPieces();
   };
 
   p.draw = () => {

@@ -3,17 +3,11 @@ import {
   LIGHT_COLORS,
   BLOCK_POS_OFFSET,
   QUILT_SCALE,
+  QUILT_COORDS,
 } from "./constants";
 
 export class Piece {
-  constructor(
-    type = "placeholder",
-    block_coords,
-    block_pos,
-    width = 50,
-    rotation = 0,
-    color
-  ) {
+  constructor(type = "placeholder", block_coords, block_pos, width = 50, rotation = 0, color) {
     this.type = type; // "placeholder", "full_dark", "full_light", "diagonal"
     this.block_coords = block_coords; // [x, y]
     this.block_pos = block_pos; // [r, c]
@@ -131,9 +125,7 @@ export class Piece {
 
     // Ensure integer values for width based on draw mode
     const newWidth =
-      drawMode === "design"
-        ? Math.round(this.width)
-        : Math.round(this.width * QUILT_SCALE);
+      drawMode === "design" ? Math.round(this.width) : Math.round(this.width * QUILT_SCALE);
     const newX = Math.round(x);
     const newY = Math.round(y);
 
@@ -159,7 +151,7 @@ export class Block {
     this.x = x;
     this.y = y;
     this.pieceWidth = pieceWidth;
-    this.mirrorType = 2; // Available: 0, 1
+    this.mirrorType = 4; // Available: 0, 1, 2, 3, 4
 
     this.pieces = this.initBlock(); // create a 2D array of placeholder pieces
     this.randRotationOptions = [0, 1, 2, 3];
@@ -185,32 +177,44 @@ export class Block {
      * of the block based on the mirror type.
      */
 
+    // Define how each quadrant should mirror the top-left quadrant
     const mirrorTypeTransformations = [
+      // [(r,c) => [new_row, new_col], rotation_map]
       // Mirror Type 0 (duplicate)
       [
         [(r, c) => [r, c + this.cols / 2], { 0: 0, 1: 1, 2: 2, 3: 3 }], // Top-right
         [(r, c) => [r + this.rows / 2, c], { 0: 0, 1: 1, 2: 2, 3: 3 }], // Bottom-left
-        [
-          (r, c) => [r + this.rows / 2, c + this.cols / 2],
-          { 0: 0, 1: 1, 2: 2, 3: 3 },
-        ], // Bottom-right
+        [(r, c) => [r + this.rows / 2, c + this.cols / 2], { 0: 0, 1: 1, 2: 2, 3: 3 }], // Bottom-right
       ],
       // Mirror Type 1 (classic mirror)
       [
         [(r, c) => [r, this.cols - 1 - c], { 0: 1, 1: 0, 2: 3, 3: 2 }], // Top-right
         [(r, c) => [this.rows - 1 - r, c], { 0: 3, 1: 2, 2: 1, 3: 0 }], // Bottom-left
-        [
-          (r, c) => [this.rows - 1 - r, this.cols - 1 - c],
-          { 0: 2, 1: 3, 2: 0, 3: 1 },
-        ], // Bottom-right
+        [(r, c) => [this.rows - 1 - r, this.cols - 1 - c], { 0: 2, 1: 3, 2: 0, 3: 1 }], // Bottom-right
+      ],
+      // Mirror Type 2 (vertical mirror)
+      [
+        [(r, c) => [r, this.cols - 1 - c], { 0: 1, 1: 0, 2: 2, 3: 3 }], // Top-right
+        [(r, c) => [r + this.rows / 2, c], { 0: 0, 1: 1, 2: 2, 3: 3 }], // Bottom-left
+        [(r, c) => [r + this.rows / 2, this.cols - 1 - c], { 0: 1, 1: 0, 2: 3, 3: 2 }], // Bottom-right
+      ],
+      // Mirror Type 3 (horizontal mirror)
+      [
+        [(r, c) => [r, c + this.cols / 2], { 0: 0, 1: 1, 2: 2, 3: 3 }], // Top-right
+        [(r, c) => [this.rows - 1 - r, c], { 0: 3, 1: 2, 2: 1, 3: 0 }], // Bottom-left
+        [(r, c) => [this.rows - 1 - r, c + this.cols / 2], { 0: 3, 1: 2, 2: 1, 3: 0 }], // Bottom-right
+      ],
+      // Mirror Type 4 (spiral)
+      [
+        [(r, c) => [c, this.cols - 1 - r], { 0: 1, 1: 2, 2: 3, 3: 0 }], // Top-right
+        [(r, c) => [this.rows - 1 - c, r], { 0: 3, 1: 0, 2: 1, 3: 2 }], // Bottom-left
+        [(r, c) => [this.rows - 1 - r, this.cols - 1 - c], { 0: 2, 1: 3, 2: 0, 3: 1 }], // Bottom-right
       ],
     ];
 
     for (let r = 0; r < this.rows / 2; r++) {
       for (let c = 0; c < this.cols / 2; c++) {
-        for (let [transform, rotationMap] of mirrorTypeTransformations[
-          this.mirrorType
-        ]) {
+        for (let [transform, rotationMap] of mirrorTypeTransformations[this.mirrorType]) {
           let [newR, newC] = transform(r, c);
           this._mirrorPiece(r, c, newR, newC, rotationMap);
         }
@@ -219,6 +223,9 @@ export class Block {
   }
 
   _mirrorPiece(srcR, srcC, destR, destC, rotationMap) {
+    // Helper function to create and set a mirrored piece in the block based on the destination and rotation map
+    // from mirrorPieces()
+
     let piece = this.pieces[srcR][srcC];
     let newRotation = rotationMap[piece.rotation];
 
@@ -240,20 +247,19 @@ export class Block {
     this.mirrorPieces();
   }
 
-  randomFill(darkColor, lightColor) {
+  randomFill(lightColor, darkColor) {
     /**
      * Fill the top left quadrant of the block with random pieces, based on current color settings.
      * The top left quadrant will then be mirrored to fill in the rest of the block.
      */
     for (let r = 0; r < this.rows / 2; r++) {
       for (let c = 0; c < this.cols / 2; c++) {
-        let pieceType = ["full_dark", "full_light", "diagonal"][
-          Math.floor(Math.random() * 3)
-        ];
+        // get a random piece type
+        let pieceType = ["full_dark", "full_light", "diagonal"][Math.floor(Math.random() * 3)];
+
+        // get a random piece rotation (for diagonal pieces)
         let rotation =
-          this.randRotationOptions[
-            Math.floor(Math.random() * this.randRotationOptions.length)
-          ];
+          this.randRotationOptions[Math.floor(Math.random() * this.randRotationOptions.length)];
 
         this.pieces[r][c] = new Piece(
           pieceType,
@@ -275,6 +281,28 @@ export class Block {
         const piece_x = this.x + col * this.pieceWidth;
         const piece_y = this.y + row * this.pieceWidth;
         this.pieces[row][col].drawAt(p, piece_x, piece_y, "design");
+      }
+    }
+  }
+
+  draw_quilt_mode(p, quiltRows, quiltCols) {
+    // Draws multiple smaller copies of this block to form a repeating quilt pattern."""
+    quiltX = QUILT_COORDS[0];
+    quiltY = QUILT_COORDS[1];
+
+    for (let qr = 0; qr < quiltRows; qr++) {
+      for (let qc = 0; qc < quiltCols; qc++) {
+        let blockX = quiltX + qc * this.width * QUILT_SCALE;
+        let blockY = quiltY + qr * this.width * QUILT_SCALE;
+
+        for (let row = 0; row < this.rows; row++) {
+          for (let col = 0; col < this.cols; col++) {
+            let piece = this.pieces[row][col];
+            pieceX = blockX + piece.block_pos[1] * piece.width * QUILT_SCALE;
+            pieceY = blockY + piece.block_pos[0] * piece.width * QUILT_SCALE;
+            piece.draw_at(p, pieceX, pieceY, "quilt");
+          }
+        }
       }
     }
   }

@@ -1,6 +1,7 @@
 export const PIECE_WIDTH = 50; // TODO make scale
 export const BLOCK_POS_OFFSET = 200; // padding (in pixels) between the screen edge main block
 export const QUILT_SCALE = 125 / 400; //  Size of quilt block / Size of design block
+export const QUILT_COORDS = [100, 100];
 
 export const DARK_COLORS = [
   "#212221", // black
