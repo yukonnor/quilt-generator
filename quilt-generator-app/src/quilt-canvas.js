@@ -13,6 +13,8 @@ const quiltCanvas = (p) => {
     // Assign functions to action buttons found in p.params so they can be accessed externally
     if (p.params) {
       p.params.randomFill = () => block.randomFill("green", "blue");
+      p.params.invertColors = () => block.invertColors();
+      p.params.updateMirrorType = (mirrorType) => block.updateMirrorType(mirrorType);
     }
   };
 

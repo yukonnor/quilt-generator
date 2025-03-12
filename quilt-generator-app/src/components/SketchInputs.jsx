@@ -1,11 +1,6 @@
 // src/components/SketchInputs.jsx
 import React from "react";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import Slider from "@mui/material/Slider";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import { Tooltip } from "@mui/material";
+import { Card, CardContent, Slider, Button, ButtonGroup, Typography, Tooltip } from "@mui/material";
 import ColorInput from "./ColorInput";
 
 const SketchInputs = ({ params, onParamChange }) => {
@@ -34,18 +29,85 @@ const SketchInputs = ({ params, onParamChange }) => {
         {/* randomFill */}
         <Tooltip title="Shortcut: ENTER">
           <Button
-            variant="contained"
+            variant="outlined"
             color="primary"
             onClick={() => {
               if (params.randomFill) {
-                params.randomFill(); // Call randomFill if it exists
+                params.randomFill();
               } else {
                 console.log("randomFill function doesn't exist yet...");
               }
             }}
           >
-            Randomize!
+            Randomize
           </Button>
+        </Tooltip>
+
+        {/* invertColors */}
+        <Tooltip title="Shortcut: I">
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => {
+              if (params.randomFill) {
+                params.invertColors();
+              }
+            }}
+          >
+            Invert Colors
+          </Button>
+        </Tooltip>
+
+        {/* mirrorTypes */}
+        <Typography gutterBottom>Mirror Type</Typography>
+        <Tooltip title="Shortcut: Z,X,C,V,B">
+          <ButtonGroup>
+            <Button
+              onClick={() => {
+                if (params.randomFill) {
+                  params.updateMirrorType(0);
+                }
+              }}
+            >
+              0
+            </Button>
+            <Button
+              onClick={() => {
+                if (params.randomFill) {
+                  params.updateMirrorType(1);
+                }
+              }}
+            >
+              1
+            </Button>
+            <Button
+              onClick={() => {
+                if (params.randomFill) {
+                  params.updateMirrorType(2);
+                }
+              }}
+            >
+              2
+            </Button>
+            <Button
+              onClick={() => {
+                if (params.randomFill) {
+                  params.updateMirrorType(3);
+                }
+              }}
+            >
+              3
+            </Button>
+            <Button
+              onClick={() => {
+                if (params.randomFill) {
+                  params.updateMirrorType(4);
+                }
+              }}
+            >
+              4
+            </Button>
+          </ButtonGroup>
         </Tooltip>
       </CardContent>
     </Card>

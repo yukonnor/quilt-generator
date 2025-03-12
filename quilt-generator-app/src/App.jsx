@@ -4,9 +4,6 @@ import "./App.css";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 import NavBar from "./components/NavBar";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import Typography from "@mui/material/Typography";
 
 import SketchInputs from "./components/SketchInputs";
 import P5Wrapper from "./components/P5Wrapper";
@@ -23,7 +20,10 @@ const sketchParams = {
     label: "Circle Radius",
   },
   circleColor: { value: "#ff0000", type: "color", label: "Circle Color" },
-  randomFill: null, // Placeholder to be set in quiltCanvas
+  // Placeholder for actions / functions / methods to be set in quiltCanvas
+  randomFill: null,
+  invertColors: null,
+  updateMirrorType: null,
 };
 
 function App() {
