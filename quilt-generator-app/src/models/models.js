@@ -274,21 +274,42 @@ export class Block {
     this.mirrorPieces();
   }
 
+  invert_colors() {
+    // Inverts the colors of the block pieces, keeping the same block design.
+    for (let row = 0; row < this.rows; row++) {
+      for (let col = 0; col < this.cols; col++) {
+        let piece = this.pieces[row][col];
+        let ogLightColor = piece.color[0];
+        piece.color = [piece.color[1], ogLightColor];
+      }
+    }
+  }
+
+  update_piece_colors(newLightColor, newDarkColor) {
+    // Updates the colors of all of the pieces in the block.
+    for (let row = 0; row < this.rows; row++) {
+      for (let col = 0; col < this.cols; col++) {
+        let piece = this.pieces[row][col];
+        piece.piece.color = [newLightColor, newDarkColor];
+      }
+    }
+  }
+
   draw_design_mode(p) {
     // Draw a large single block for editing.
     for (let row = 0; row < this.rows; row++) {
       for (let col = 0; col < this.cols; col++) {
-        const piece_x = this.x + col * this.pieceWidth;
-        const piece_y = this.y + row * this.pieceWidth;
-        this.pieces[row][col].drawAt(p, piece_x, piece_y, "design");
+        const pieceX = this.x + col * this.pieceWidth;
+        const pieceY = this.y + row * this.pieceWidth;
+        this.pieces[row][col].drawAt(p, pieceX, pieceY, "design");
       }
     }
   }
 
   draw_quilt_mode(p, quiltRows, quiltCols) {
     // Draws multiple smaller copies of this block to form a repeating quilt pattern."""
-    quiltX = QUILT_COORDS[0];
-    quiltY = QUILT_COORDS[1];
+    const quiltX = QUILT_COORDS[0];
+    const quiltY = QUILT_COORDS[1];
 
     for (let qr = 0; qr < quiltRows; qr++) {
       for (let qc = 0; qc < quiltCols; qc++) {
@@ -298,9 +319,9 @@ export class Block {
         for (let row = 0; row < this.rows; row++) {
           for (let col = 0; col < this.cols; col++) {
             let piece = this.pieces[row][col];
-            pieceX = blockX + piece.block_pos[1] * piece.width * QUILT_SCALE;
-            pieceY = blockY + piece.block_pos[0] * piece.width * QUILT_SCALE;
-            piece.draw_at(p, pieceX, pieceY, "quilt");
+            const pieceX = blockX + piece.block_pos[1] * piece.width * QUILT_SCALE;
+            const pieceY = blockY + piece.block_pos[0] * piece.width * QUILT_SCALE;
+            piece.drawAt(p, pieceX, pieceY, "quilt");
           }
         }
       }
