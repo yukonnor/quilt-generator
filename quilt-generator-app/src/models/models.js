@@ -7,7 +7,7 @@ import {
 } from "./constants";
 
 export class Piece {
-  constructor(type = "placeholder", block_coords, block_pos, width = 50, rotation = 0, color) {
+  constructor(type = "placeholder", block_coords, block_pos, width, rotation = 0, color) {
     this.type = type; // "placeholder", "full_dark", "full_light", "diagonal"
     this.block_coords = block_coords; // [x, y]
     this.block_pos = block_pos; // [r, c]
@@ -165,7 +165,7 @@ export class Block {
     for (let r = 0; r < this.rows; r++) {
       pieces.push([]);
       for (let c = 0; c < this.cols; c++) {
-        pieces[r].push(new Piece("placeholder", [this.x, this.y], [r, c]));
+        pieces[r].push(new Piece("placeholder", [this.x, this.y], [r, c], this.pieceWidth));
       }
     }
     return pieces;

@@ -23,6 +23,7 @@ const sketchParams = {
     label: "Circle Radius",
   },
   circleColor: { value: "#ff0000", type: "color", label: "Circle Color" },
+  randomFill: null, // Placeholder to be set in quiltCanvas
 };
 
 function App() {
