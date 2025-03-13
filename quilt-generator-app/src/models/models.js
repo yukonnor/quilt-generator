@@ -1,10 +1,10 @@
 import {
   DARK_COLORS,
   LIGHT_COLORS,
-  BLOCK_POS_OFFSET,
+  BLOCK_COORDS,
   QUILT_SCALE,
   QUILT_COORDS,
-  COLOR_OPTION_WIDTH,
+  DEFAULT_PIECE_WIDTH,
 } from "./constants";
 
 export class Piece {
@@ -146,11 +146,12 @@ export class Piece {
 }
 
 export class Block {
-  constructor(rows = 8, cols = 8, x = 0, y = 0, pieceWidth = 50) {
+  constructor(rows = 8, cols = 8, coords = BLOCK_COORDS, pieceWidth = DEFAULT_PIECE_WIDTH) {
     this.rows = rows;
     this.cols = cols;
-    this.x = x;
-    this.y = y;
+    this.coords = coords; // [x, y] of top left of block
+    this.x = coords[0];
+    this.y = coords[1];
     this.pieceWidth = pieceWidth;
     this.mirrorType = 4; // Available: 0, 1, 2, 3, 4
 
@@ -335,7 +336,7 @@ export class ColorOption {
     this.pos = pos; // [x, y]
     this.color = color;
     this.colorType = colorType; // 'dark' or 'light'
-    this.width = COLOR_OPTION_WIDTH;
+    this.width = DEFAULT_PIECE_WIDTH;
     this.rect = this.create_rect();
   }
 

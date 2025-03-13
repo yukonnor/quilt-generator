@@ -1,5 +1,5 @@
-export const PIECE_WIDTH = 50; // TODO make scale
-export const BLOCK_POS_OFFSET = 200; // padding (in pixels) between the screen edge main block
+export const DEFAULT_PIECE_WIDTH = 70;
+export const BLOCK_COORDS = [50, 50]; // padding (in pixels) between the screen edge main block
 export const QUILT_SCALE = 150 / 560; //  Size of quilt block / Size of design block
 export const QUILT_COORDS = [100, 25];
 
