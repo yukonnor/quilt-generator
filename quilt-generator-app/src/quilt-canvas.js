@@ -1,4 +1,4 @@
-import { Block, ColorOptions } from "./models/models";
+import { Block, ColorOptions, PieceOptions } from "./models/models";
 import { XRES, YRES, LIGHT_COLORS, DARK_COLORS } from "./models/constants";
 
 const quiltCanvas = (p) => {
@@ -6,6 +6,7 @@ const quiltCanvas = (p) => {
   let mode = "design"; // "quilt_preview"
   let selectedPieceOption = null;
   let showDesignTools = true;
+  let pieceOptions;
   let colorOptions;
 
   p.setup = () => {
@@ -19,10 +20,15 @@ const quiltCanvas = (p) => {
     colorOptions = new ColorOptions(LIGHT_COLORS, DARK_COLORS);
 
     // Create piece options
+    pieceOptions = new PieceOptions();
 
     // Assign functions to action buttons found in p.params so they can be accessed externally
     if (p.params) {
-      p.params.randomFill = () => block.randomFill("green", "blue");
+      p.params.randomFill = () => {
+        let lightColor = pieceOptions.pieceOptions[0].color[0];
+        let darkColor = pieceOptions.pieceOptions[0].color[1];
+        block.randomFill(lightColor, darkColor);
+      };
       p.params.invertColors = () => block.invertColors();
       p.params.updateMirrorType = (mirrorType) => block.updateMirrorType(mirrorType);
     }
@@ -33,6 +39,7 @@ const quiltCanvas = (p) => {
 
     if (mode === "design") {
       block.drawDesignMode(p);
+      pieceOptions.draw(p);
       colorOptions.draw(p);
     }
 
@@ -44,7 +51,9 @@ const quiltCanvas = (p) => {
   p.keyReleased = () => {
     // RANDOM FILL
     if (p.keyCode === p.ENTER) {
-      block.randomFill("green", "blue");
+      let lightColor = pieceOptions.pieceOptions[0].color[0];
+      let darkColor = pieceOptions.pieceOptions[0].color[1];
+      block.randomFill(lightColor, darkColor);
     }
     // SWITCH MODES
     if (p.key === "q") {

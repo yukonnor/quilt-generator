@@ -4,6 +4,7 @@ export const DEFAULT_PIECE_WIDTH = 70;
 export const BLOCK_COORDS = [50, 50]; // padding (in pixels) between the screen edge main block
 export const QUILT_SCALE = 150 / 560; //  Size of quilt block / Size of design block
 export const QUILT_COORDS = [100, 25];
+export const NUM_PIECE_OPTIONS = 6; // 6 total piece options (2 solids, 4 diagonals)
 
 export const DARK_COLORS = [
   "#212221", // black

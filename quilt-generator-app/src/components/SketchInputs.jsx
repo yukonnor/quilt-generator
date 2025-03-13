@@ -11,22 +11,23 @@ const SketchInputs = ({ params, onParamChange }) => {
         <h3>Quilt Inputs</h3>
 
         {/* radius */}
-        <Typography gutterBottom>{params.radius.label}</Typography>
+        {/* <Typography gutterBottom>{params.radius.label}</Typography>
         <Slider
           value={params.radius.value}
           min={params.radius.min}
           max={params.radius.max}
           valueLabelDisplay="auto"
           onChange={(e) => onParamChange("radius", e.target.value)}
-        />
+        /> */}
 
         {/* circleColor */}
-        <ColorInput
+        {/* <ColorInput
           value={params.circleColor.value}
           onChange={(newColor) => onParamChange("circleColor", newColor)}
-        />
+        /> */}
 
         {/* randomFill */}
+        <Typography gutterBottom></Typography>
         <Tooltip title="Shortcut: ENTER">
           <Button
             variant="outlined"
@@ -44,12 +45,13 @@ const SketchInputs = ({ params, onParamChange }) => {
         </Tooltip>
 
         {/* invertColors */}
+        <Typography gutterBottom></Typography>
         <Tooltip title="Shortcut: I">
           <Button
             variant="outlined"
             color="primary"
             onClick={() => {
-              if (params.randomFill) {
+              if (params.invertColors) {
                 params.invertColors();
               }
             }}
@@ -64,7 +66,7 @@ const SketchInputs = ({ params, onParamChange }) => {
           <ButtonGroup>
             <Button
               onClick={() => {
-                if (params.randomFill) {
+                if (params.updateMirrorType) {
                   params.updateMirrorType(0);
                 }
               }}
@@ -73,7 +75,7 @@ const SketchInputs = ({ params, onParamChange }) => {
             </Button>
             <Button
               onClick={() => {
-                if (params.randomFill) {
+                if (params.updateMirrorType) {
                   params.updateMirrorType(1);
                 }
               }}
@@ -82,7 +84,7 @@ const SketchInputs = ({ params, onParamChange }) => {
             </Button>
             <Button
               onClick={() => {
-                if (params.randomFill) {
+                if (params.updateMirrorType) {
                   params.updateMirrorType(2);
                 }
               }}
@@ -91,7 +93,7 @@ const SketchInputs = ({ params, onParamChange }) => {
             </Button>
             <Button
               onClick={() => {
-                if (params.randomFill) {
+                if (params.updateMirrorType) {
                   params.updateMirrorType(3);
                 }
               }}
@@ -100,7 +102,7 @@ const SketchInputs = ({ params, onParamChange }) => {
             </Button>
             <Button
               onClick={() => {
-                if (params.randomFill) {
+                if (params.updateMirrorType) {
                   params.updateMirrorType(4);
                 }
               }}

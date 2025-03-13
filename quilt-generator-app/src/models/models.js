@@ -7,10 +7,18 @@ import {
   QUILT_SCALE,
   QUILT_COORDS,
   DEFAULT_PIECE_WIDTH,
+  NUM_PIECE_OPTIONS,
 } from "./constants";
 
 export class Piece {
-  constructor(type = "placeholder", block_coords, block_pos, width, rotation = 0, color) {
+  constructor(
+    type = "placeholder",
+    block_coords,
+    block_pos,
+    width,
+    rotation = 0,
+    color = [LIGHT_COLORS[0], DARK_COLORS[1]]
+  ) {
     this.type = type; // "placeholder", "full_dark", "full_light", "diagonal"
     this.block_coords = block_coords; // [x, y]
     this.block_pos = block_pos; // [r, c]
@@ -328,6 +336,56 @@ export class Block {
             piece.drawAt(p, pieceX, pieceY, "quilt");
           }
         }
+      }
+    }
+  }
+}
+
+export class PieceOptions {
+  constructor() {
+    this.coords = [XRES - BLOCK_COORDS[0] - DEFAULT_PIECE_WIDTH, BLOCK_COORDS[1]];
+    this.pieceOptions = this.createPieceOptions();
+  }
+  createPieceOptions() {
+    let pieceOptions = [];
+
+    for (let i = 0; i < NUM_PIECE_OPTIONS; i++) {
+      let type, rotation;
+
+      // Create the two solid block types:
+      if (i === 0) {
+        type = "full_light";
+        rotation = 0;
+      } else if (i === 1) {
+        type = "full_dark";
+        rotation = 0;
+      }
+      // Create the four diagonal block types
+      else {
+        type = "diagonal";
+        rotation = i - 2;
+      }
+
+      let newPiece = new Piece(type, this.coords, [i, 0], DEFAULT_PIECE_WIDTH, rotation);
+      pieceOptions.push(newPiece);
+    }
+
+    return pieceOptions;
+  }
+
+  draw(p) {
+    for (let i = 0; i < NUM_PIECE_OPTIONS; i++) {
+      this.pieceOptions[i].draw(p);
+    }
+  }
+
+  updateColors(colorObj) {
+    for (let i = 0; i < NUM_PIECE_OPTIONS; i++) {
+      if (colorObj.color_type === "dark") {
+        this.pieceOptions[i].color[1] = colorObj.color;
+      }
+      if (colorObj.color_type === "light") {
+        this.pieceOptions[i].color[0] = colorObj.color;
       }
     }
   }
