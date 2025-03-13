@@ -1,15 +1,24 @@
-import { Piece, Block } from "./models/models";
+import { Block, ColorOptions } from "./models/models";
+import { XRES, YRES, LIGHT_COLORS, DARK_COLORS } from "./models/constants";
 
 const quiltCanvas = (p) => {
   let block;
   let mode = "design"; // "quilt_preview"
   let selectedPieceOption = null;
+  let showDesignTools = true;
+  let colorOptions;
 
   p.setup = () => {
-    p.createCanvas(800, 800);
+    p.createCanvas(XRES, YRES);
     p.background(25);
 
+    // Instantiate the block
     block = new Block(8, 8);
+
+    // Create color options
+    colorOptions = new ColorOptions(LIGHT_COLORS, DARK_COLORS);
+
+    // Create piece options
 
     // Assign functions to action buttons found in p.params so they can be accessed externally
     if (p.params) {
@@ -24,6 +33,7 @@ const quiltCanvas = (p) => {
 
     if (mode === "design") {
       block.drawDesignMode(p);
+      colorOptions.draw(p);
     }
 
     if (mode === "quilt_preview") {
