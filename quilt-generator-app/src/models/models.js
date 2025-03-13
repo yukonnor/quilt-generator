@@ -4,6 +4,7 @@ import {
   BLOCK_POS_OFFSET,
   QUILT_SCALE,
   QUILT_COORDS,
+  COLOR_OPTION_WIDTH,
 } from "./constants";
 
 export class Piece {
@@ -326,5 +327,31 @@ export class Block {
         }
       }
     }
+  }
+}
+
+export class ColorOption {
+  constructor(color, colorType, pos) {
+    this.pos = pos; // [x, y]
+    this.color = color;
+    this.colorType = colorType; // 'dark' or 'light'
+    this.width = COLOR_OPTION_WIDTH;
+    this.rect = this.create_rect();
+  }
+
+  create_rect() {
+    /* Create a helpful rect property with size and position attributes based off
+       of the color option's position */
+
+    let rect = {
+      left: this.pos[0],
+      right: this.pos[0] + this.width,
+      top: this.pos[1],
+      bottom: this.pos[1] + this.width,
+      width: this.width,
+      height: this.width,
+    };
+
+    return rect;
   }
 }
