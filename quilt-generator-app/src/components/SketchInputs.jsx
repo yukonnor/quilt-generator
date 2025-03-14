@@ -8,6 +8,7 @@ import {
   ButtonGroup,
   Typography,
   Tooltip,
+  ToggleButtonGroup,
   ToggleButton,
 } from "@mui/material";
 import ColorInput from "./ColorInput";
@@ -35,20 +36,25 @@ const SketchInputs = ({ params, onParamChange }) => {
         /> */}
 
         {/* mode */}
-        {/* <Typography gutterBottom></Typography>
+        <Typography gutterBottom>View Mode:</Typography>
         <ToggleButtonGroup
           color="primary"
-          value={alignment}
           exclusive
-          onChange={handleChange}
-          aria-label="Platform"
+          value={params.viewMode.value}
+          onChange={(_, newMode) => {
+            if (newMode !== null) {
+              params.viewMode.setMode(newMode);
+              onParamChange("viewMode", newMode);
+            }
+          }}
+          aria-label="View Mode"
         >
           <ToggleButton value="design">Design</ToggleButton>
           <ToggleButton value="quilt">Quilt</ToggleButton>
-        </ToggleButtonGroup> */}
+        </ToggleButtonGroup>
 
         {/* randomFill */}
-        <Typography gutterBottom></Typography>
+        <Typography gutterBottom>Actions:</Typography>
         <Tooltip title="Shortcut: ENTER">
           <Button
             variant="outlined"

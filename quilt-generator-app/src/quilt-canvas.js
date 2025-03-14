@@ -3,7 +3,7 @@ import { XRES, YRES, LIGHT_COLORS, DARK_COLORS } from "./models/constants";
 
 const quiltCanvas = (p) => {
   let block;
-  let mode = "design"; // "quilt_preview"
+  let mode = "design"; // "quilt"
   let selectedPieceOption = null;
   let showDesignTools = true;
   let pieceOptions;
@@ -24,16 +24,19 @@ const quiltCanvas = (p) => {
 
     // Assign functions to action buttons found in p.params so they can be accessed externally
     if (p.params) {
+      p.params.viewMode.setMode = (clickedMode) => {
+        mode = clickedMode;
+      };
       p.params.randomFill = () => {
-        let lightColor = pieceOptions.pieceOptions[0].color[0];
-        let darkColor = pieceOptions.pieceOptions[0].color[1];
+        let lightColor = pieceOptions.options[0].color[0];
+        let darkColor = pieceOptions.options[0].color[1];
         block.randomFill(lightColor, darkColor);
       };
       p.params.invertColors = () => block.invertColors();
       p.params.updateMirrorType = (mirrorType) => block.updateMirrorType(mirrorType);
       p.params.updateAllPieceColors = () => {
-        let lightColor = pieceOptions.pieceOptions[0].color[0];
-        let darkColor = pieceOptions.pieceOptions[0].color[1];
+        let lightColor = pieceOptions.options[0].color[0];
+        let darkColor = pieceOptions.options[0].color[1];
         block.updateAllPieceColors(lightColor, darkColor);
       };
     }
@@ -50,7 +53,7 @@ const quiltCanvas = (p) => {
       colorOptions.draw(p);
     }
 
-    if (mode === "quilt_preview") {
+    if (mode === "quilt") {
       block.drawQuiltMode(p, 5, 4);
     }
   };
@@ -87,7 +90,7 @@ const quiltCanvas = (p) => {
     }
     // SWITCH MODES
     if (p.key === "q") {
-      mode = mode === "design" ? "quilt_preview" : "design";
+      mode = mode === "design" ? "quilt" : "design";
     }
     // SWITCH MIRROR TYPES
     if (p.key === "z") {

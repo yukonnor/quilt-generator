@@ -21,6 +21,7 @@ const sketchParams = {
   },
   circleColor: { value: "#ff0000", type: "color", label: "Circle Color" },
   // Placeholder for actions / functions / methods to be set in quiltCanvas
+  viewMode: { value: "design", setMode: null },
   randomFill: null,
   invertColors: null,
   updateMirrorType: null,
@@ -32,6 +33,7 @@ function App() {
 
   // Handle changes to any parameter by key
   const handleParamChange = (key, value) => {
+    console.log("Param changed:", key, value);
     setParams((prevParams) => ({
       ...prevParams,
       [key]: {
