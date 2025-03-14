@@ -345,10 +345,10 @@ export class Block {
 export class PieceOptions {
   constructor() {
     this.coords = [XRES - BLOCK_COORDS[0] - DEFAULT_PIECE_WIDTH, BLOCK_COORDS[1]];
-    this.pieceOptions = this.createPieceOptions();
+    this.options = this.createPieceOptions();
   }
   createPieceOptions() {
-    let pieceOptions = [];
+    let options = [];
 
     for (let i = 0; i < NUM_PIECE_OPTIONS; i++) {
       let type, rotation;
@@ -368,25 +368,25 @@ export class PieceOptions {
       }
 
       let newPiece = new Piece(type, this.coords, [i, 0], DEFAULT_PIECE_WIDTH, rotation);
-      pieceOptions.push(newPiece);
+      options.push(newPiece);
     }
 
-    return pieceOptions;
+    return options;
   }
 
   draw(p) {
     for (let i = 0; i < NUM_PIECE_OPTIONS; i++) {
-      this.pieceOptions[i].draw(p);
+      this.options[i].draw(p);
     }
   }
 
   updateColors(colorOptionObj) {
     for (let i = 0; i < NUM_PIECE_OPTIONS; i++) {
       if (colorOptionObj.colorType === "dark") {
-        this.pieceOptions[i].color[1] = colorOptionObj.color;
+        this.options[i].color[1] = colorOptionObj.color;
       }
       if (colorOptionObj.colorType === "light") {
-        this.pieceOptions[i].color[0] = colorOptionObj.color;
+        this.options[i].color[0] = colorOptionObj.color;
       }
     }
   }

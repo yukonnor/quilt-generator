@@ -1,6 +1,15 @@
 // src/components/SketchInputs.jsx
 import React from "react";
-import { Card, CardContent, Slider, Button, ButtonGroup, Typography, Tooltip } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Slider,
+  Button,
+  ButtonGroup,
+  Typography,
+  Tooltip,
+  ToggleButton,
+} from "@mui/material";
 import ColorInput from "./ColorInput";
 
 const SketchInputs = ({ params, onParamChange }) => {
@@ -24,6 +33,19 @@ const SketchInputs = ({ params, onParamChange }) => {
           value={params.circleColor.value}
           onChange={(newColor) => onParamChange("circleColor", newColor)}
         /> */}
+
+        {/* mode */}
+        {/* <Typography gutterBottom></Typography>
+        <ToggleButtonGroup
+          color="primary"
+          value={alignment}
+          exclusive
+          onChange={handleChange}
+          aria-label="Platform"
+        >
+          <ToggleButton value="design">Design</ToggleButton>
+          <ToggleButton value="quilt">Quilt</ToggleButton>
+        </ToggleButtonGroup> */}
 
         {/* randomFill */}
         <Typography gutterBottom></Typography>

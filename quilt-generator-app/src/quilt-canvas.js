@@ -56,25 +56,33 @@ const quiltCanvas = (p) => {
   };
 
   p.mousePressed = () => {
-    if (colorOptions) {
-      for (let colorOption of colorOptions.options) {
-        if (
-          p.mouseX >= colorOption.coords[0] &&
-          p.mouseX <= colorOption.coords[0] + colorOption.width &&
-          p.mouseY >= colorOption.coords[1] &&
-          p.mouseY <= colorOption.coords[1] + colorOption.width
-        ) {
-          pieceOptions.updateColors(colorOption);
-        }
+    if (!colorOptions || !colorOptions.options) {
+      console.warn("colorOptions is not ready yet.");
+      return;
+    }
+
+    for (let colorOption of colorOptions.options) {
+      if (
+        p.mouseX >= colorOption.coords[0] &&
+        p.mouseX <= colorOption.coords[0] + colorOption.width &&
+        p.mouseY >= colorOption.coords[1] &&
+        p.mouseY <= colorOption.coords[1] + colorOption.width
+      ) {
+        pieceOptions.updateColors(colorOption);
       }
     }
   };
 
   p.keyReleased = () => {
+    if (!pieceOptions || !pieceOptions.options) {
+      console.warn("pieceOptions is not ready yet.");
+      return;
+    }
+
     // RANDOM FILL
     if (p.keyCode === p.ENTER) {
-      let lightColor = pieceOptions.pieceOptions[0].color[0];
-      let darkColor = pieceOptions.pieceOptions[0].color[1];
+      let lightColor = pieceOptions.options[0].color[0];
+      let darkColor = pieceOptions.options[0].color[1];
       block.randomFill(lightColor, darkColor);
     }
     // SWITCH MODES
