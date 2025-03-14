@@ -4,7 +4,6 @@ import { Card, CardContent, Slider, Button, ButtonGroup, Typography, Tooltip } f
 import ColorInput from "./ColorInput";
 
 const SketchInputs = ({ params, onParamChange }) => {
-  console.log("SketchInputs params:", params);
   return (
     <Card className="quilt-inputs">
       <CardContent>
@@ -41,6 +40,22 @@ const SketchInputs = ({ params, onParamChange }) => {
             }}
           >
             Randomize
+          </Button>
+        </Tooltip>
+
+        {/* updateAllPieceColors */}
+        <Typography gutterBottom></Typography>
+        <Tooltip title="Shortcut: tbd">
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => {
+              if (params.invertColors) {
+                params.updateAllPieceColors();
+              }
+            }}
+          >
+            Update Block Colors
           </Button>
         </Tooltip>
 

@@ -24,6 +24,7 @@ const sketchParams = {
   randomFill: null,
   invertColors: null,
   updateMirrorType: null,
+  updateAllPieceColors: null,
 };
 
 function App() {

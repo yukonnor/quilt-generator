@@ -297,12 +297,13 @@ export class Block {
     }
   }
 
-  updatePieceColors(newLightColor, newDarkColor) {
+  updateAllPieceColors(newLightColor, newDarkColor) {
     // Updates the colors of all of the pieces in the block.
     for (let row = 0; row < this.rows; row++) {
       for (let col = 0; col < this.cols; col++) {
         let piece = this.pieces[row][col];
-        piece.piece.color = [newLightColor, newDarkColor];
+        piece.color[0] = newLightColor;
+        piece.color[1] = newDarkColor;
       }
     }
   }
@@ -379,13 +380,13 @@ export class PieceOptions {
     }
   }
 
-  updateColors(colorObj) {
+  updateColors(colorOptionObj) {
     for (let i = 0; i < NUM_PIECE_OPTIONS; i++) {
-      if (colorObj.color_type === "dark") {
-        this.pieceOptions[i].color[1] = colorObj.color;
+      if (colorOptionObj.colorType === "dark") {
+        this.pieceOptions[i].color[1] = colorOptionObj.color;
       }
-      if (colorObj.color_type === "light") {
-        this.pieceOptions[i].color[0] = colorObj.color;
+      if (colorOptionObj.colorType === "light") {
+        this.pieceOptions[i].color[0] = colorOptionObj.color;
       }
     }
   }
@@ -428,35 +429,35 @@ export class ColorOption {
 export class ColorOptions {
   constructor(lightColors = LIGHT_COLORS, darkColors = DARK_COLORS) {
     this.coords = [BLOCK_COORDS[0], 8 * DEFAULT_PIECE_WIDTH + BLOCK_COORDS[1] * 2]; // [x,y] pos of color options block
-    this.colorOptions = this.createColorOptions(lightColors, darkColors);
+    this.options = this.createColorOptions(lightColors, darkColors);
   }
 
   createColorOptions(lightColors, darkColors) {
-    let colorOptions = [];
+    let options = [];
 
     for (let i = 0; i < lightColors.length; i++) {
       let x = this.coords[0] + i * DEFAULT_PIECE_WIDTH;
       let y = this.coords[1];
 
       let newColorOption = new ColorOption(lightColors[i], "light", [x, y]);
-      colorOptions.push(newColorOption);
+      options.push(newColorOption);
     }
 
     for (let i = 0; i < darkColors.length; i++) {
       let x = this.coords[0] + i * DEFAULT_PIECE_WIDTH;
       let y = this.coords[1] + DEFAULT_PIECE_WIDTH; // one row below dark colors
 
-      let newColorOption = new ColorOption(darkColors[i], "light", [x, y]);
-      colorOptions.push(newColorOption);
+      let newColorOption = new ColorOption(darkColors[i], "dark", [x, y]);
+      options.push(newColorOption);
     }
 
-    return colorOptions;
+    return options;
   }
 
   draw(p) {
-    for (let i = 0; i < this.colorOptions.length; i++) {
+    for (let i = 0; i < this.options.length; i++) {
       // draw each color option block
-      this.colorOptions[i].draw(p);
+      this.options[i].draw(p);
     }
   }
 }
