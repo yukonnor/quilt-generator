@@ -70,6 +70,7 @@ const quiltCanvas = (p) => {
       return;
     }
 
+    // If colorOption clicked, update pieceOption colors
     for (let colorOption of colorOptions.options) {
       if (
         p.mouseX >= colorOption.coords[0] &&
@@ -82,7 +83,7 @@ const quiltCanvas = (p) => {
       }
     }
 
-    console.log(pieceOptions.options);
+    // If pieceOption clicked, select the pieceOption
     for (let pieceOption of pieceOptions.options) {
       if (
         p.mouseX >= pieceOption.rect.left &&
@@ -92,6 +93,26 @@ const quiltCanvas = (p) => {
       ) {
         pieceOptions.selectOption(pieceOption);
         pieceClicked = true;
+      }
+    }
+
+    // If block piece clicked, set it to the selected pieceOption
+    if (pieceOptions.selectedPiece) {
+      for (let row of block.pieces) {
+        for (let piece of row) {
+          if (
+            p.mouseX >= piece.rect.left &&
+            p.mouseX <= piece.rect.right &&
+            p.mouseY >= piece.rect.top &&
+            p.mouseY <= piece.rect.bottom
+          ) {
+            piece.type = pieceOptions.selectedPiece.type;
+            piece.rotation = pieceOptions.selectedPiece.rotation;
+            piece.dark_color = pieceOptions.selectedPiece.dark_color;
+            piece.light_color = pieceOptions.selectedPiece.light_color;
+            pieceClicked = true;
+          }
+        }
       }
     }
 
