@@ -63,6 +63,8 @@ const quiltCanvas = (p) => {
   };
 
   p.mousePressed = () => {
+    let pieceClicked = false;
+
     if (!colorOptions || !colorOptions.options) {
       console.warn("colorOptions is not ready yet.");
       return;
@@ -76,8 +78,25 @@ const quiltCanvas = (p) => {
         p.mouseY <= colorOption.coords[1] + colorOption.width
       ) {
         pieceOptions.updateColors(colorOption);
+        pieceClicked = true;
       }
     }
+
+    console.log(pieceOptions.options);
+    for (let pieceOption of pieceOptions.options) {
+      if (
+        p.mouseX >= pieceOption.rect.left &&
+        p.mouseX <= pieceOption.rect.right &&
+        p.mouseY >= pieceOption.rect.top &&
+        p.mouseY <= pieceOption.rect.bottom
+      ) {
+        pieceOptions.selectOption(pieceOption);
+        pieceClicked = true;
+      }
+    }
+
+    // if click didn't collide with anything, deselect the selected piece option
+    !pieceClicked && pieceOptions.selectOption(null);
   };
 
   p.keyReleased = () => {

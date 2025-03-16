@@ -6,6 +6,8 @@ export const QUILT_SCALE = 150 / 560; //  Size of quilt block / Size of design b
 export const QUILT_COORDS = [100, 25];
 export const NUM_PIECE_OPTIONS = 6; // 6 total piece options (2 solids, 4 diagonals)
 
+export const HIGHLIGHT_COLOR = "#FFCC00";
+
 export const DARK_COLORS = [
   "#212221", // black
   "#343330", // gray

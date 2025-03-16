@@ -1,6 +1,7 @@
 import {
   XRES,
   YRES,
+  HIGHLIGHT_COLOR,
   DARK_COLORS,
   LIGHT_COLORS,
   BLOCK_COORDS,
@@ -66,7 +67,7 @@ export class Piece {
 
     if (this.type === "placeholder") {
       p.noFill();
-      p.stroke(255, 204, 0); // RGB: Yellow   TODO: Use variable
+      p.stroke(HIGHLIGHT_COLOR); // RGB: Yellow   TODO: Use variable
       p.strokeWeight(2);
       p.rect(rect.left, rect.top, rect.width, rect.width);
     } else if (this.type === "full_dark") {
@@ -345,7 +346,9 @@ export class Block {
 export class PieceOptions {
   constructor() {
     this.coords = [XRES - BLOCK_COORDS[0] - DEFAULT_PIECE_WIDTH, BLOCK_COORDS[1]];
+    this.width = DEFAULT_PIECE_WIDTH;
     this.options = this.createPieceOptions();
+    this.selectedPiece = null;
   }
   createPieceOptions() {
     let options = [];
@@ -378,6 +381,15 @@ export class PieceOptions {
     for (let i = 0; i < NUM_PIECE_OPTIONS; i++) {
       this.options[i].draw(p);
     }
+
+    // draw an outline around the selected piece
+    if (this.selectedPiece) {
+      let piece = this.selectedPiece;
+      p.noFill();
+      p.stroke(HIGHLIGHT_COLOR); // RGB: Yellow   TODO: Use variable
+      p.strokeWeight(2);
+      p.rect(piece.rect.left - 1, piece.rect.top - 1, piece.rect.width + 1, piece.rect.width + 1);
+    }
   }
 
   updateColors(colorOptionObj) {
@@ -389,6 +401,10 @@ export class PieceOptions {
         this.options[i].color[0] = colorOptionObj.color;
       }
     }
+  }
+
+  selectOption(pieceOption) {
+    this.selectedPiece = pieceOption;
   }
 }
 
