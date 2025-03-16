@@ -27,13 +27,17 @@ const quiltCanvas = (p) => {
       p.params.viewMode.setMode = (clickedMode) => {
         mode = clickedMode;
       };
+
+      p.params.mirrorType.updateMirrorType = (mirrorType) => block.updateMirrorType(mirrorType);
+
       p.params.randomFill = () => {
         let lightColor = pieceOptions.options[0].color[0];
         let darkColor = pieceOptions.options[0].color[1];
         block.randomFill(lightColor, darkColor);
       };
+
       p.params.invertColors = () => block.invertColors();
-      p.params.updateMirrorType = (mirrorType) => block.updateMirrorType(mirrorType);
+
       p.params.updateAllPieceColors = () => {
         let lightColor = pieceOptions.options[0].color[0];
         let darkColor = pieceOptions.options[0].color[1];

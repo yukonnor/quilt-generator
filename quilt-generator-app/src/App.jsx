@@ -24,7 +24,7 @@ const sketchParams = {
   viewMode: { value: "design", setMode: null },
   randomFill: null,
   invertColors: null,
-  updateMirrorType: null,
+  mirrorType: { value: 4, updateMirrorType: null },
   updateAllPieceColors: null,
 };
 

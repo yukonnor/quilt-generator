@@ -35,23 +35,48 @@ const SketchInputs = ({ params, onParamChange }) => {
           onChange={(newColor) => onParamChange("circleColor", newColor)}
         /> */}
 
-        {/* mode */}
+        {/* viewMode */}
         <Typography gutterBottom>View Mode:</Typography>
-        <ToggleButtonGroup
-          color="primary"
-          exclusive
-          value={params.viewMode.value}
-          onChange={(_, newMode) => {
-            if (newMode !== null) {
-              params.viewMode.setMode(newMode);
-              onParamChange("viewMode", newMode);
-            }
-          }}
-          aria-label="View Mode"
-        >
-          <ToggleButton value="design">Design</ToggleButton>
-          <ToggleButton value="quilt">Quilt</ToggleButton>
-        </ToggleButtonGroup>
+        <Tooltip title="Shortcut: Q">
+          <ToggleButtonGroup
+            color="primary"
+            exclusive
+            value={params.viewMode.value}
+            onChange={(_, newMode) => {
+              if (newMode !== null) {
+                params.viewMode.setMode(newMode);
+                onParamChange("viewMode", newMode);
+              }
+            }}
+            aria-label="View Mode"
+          >
+            <ToggleButton value="design">Design</ToggleButton>
+            <ToggleButton value="quilt">Quilt</ToggleButton>
+          </ToggleButtonGroup>
+        </Tooltip>
+
+        {/* mirrorTypes */}
+        <Typography gutterBottom>Mirror Type</Typography>
+        <Tooltip title="Shortcut: Z,X,C,V,B">
+          <ToggleButtonGroup
+            color="primary"
+            exclusive
+            value={params.mirrorType.value}
+            onChange={(_, newMirrorType) => {
+              if (newMirrorType !== null) {
+                params.mirrorType.updateMirrorType(newMirrorType);
+                onParamChange("mirrorType", newMirrorType);
+              }
+            }}
+            aria-label="Mirror Type"
+          >
+            <ToggleButton value={0}>0</ToggleButton>
+            <ToggleButton value={1}>1</ToggleButton>
+            <ToggleButton value={2}>2</ToggleButton>
+            <ToggleButton value={3}>3</ToggleButton>
+            <ToggleButton value={4}>4</ToggleButton>
+          </ToggleButtonGroup>
+        </Tooltip>
 
         {/* randomFill */}
         <Typography gutterBottom>Actions:</Typography>
@@ -101,58 +126,6 @@ const SketchInputs = ({ params, onParamChange }) => {
           >
             Invert Colors
           </Button>
-        </Tooltip>
-
-        {/* mirrorTypes */}
-        <Typography gutterBottom>Mirror Type</Typography>
-        <Tooltip title="Shortcut: Z,X,C,V,B">
-          <ButtonGroup>
-            <Button
-              onClick={() => {
-                if (params.updateMirrorType) {
-                  params.updateMirrorType(0);
-                }
-              }}
-            >
-              0
-            </Button>
-            <Button
-              onClick={() => {
-                if (params.updateMirrorType) {
-                  params.updateMirrorType(1);
-                }
-              }}
-            >
-              1
-            </Button>
-            <Button
-              onClick={() => {
-                if (params.updateMirrorType) {
-                  params.updateMirrorType(2);
-                }
-              }}
-            >
-              2
-            </Button>
-            <Button
-              onClick={() => {
-                if (params.updateMirrorType) {
-                  params.updateMirrorType(3);
-                }
-              }}
-            >
-              3
-            </Button>
-            <Button
-              onClick={() => {
-                if (params.updateMirrorType) {
-                  params.updateMirrorType(4);
-                }
-              }}
-            >
-              4
-            </Button>
-          </ButtonGroup>
         </Tooltip>
       </CardContent>
     </Card>
