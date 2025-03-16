@@ -108,8 +108,7 @@ const quiltCanvas = (p) => {
           ) {
             piece.type = pieceOptions.selectedPiece.type;
             piece.rotation = pieceOptions.selectedPiece.rotation;
-            piece.dark_color = pieceOptions.selectedPiece.dark_color;
-            piece.light_color = pieceOptions.selectedPiece.light_color;
+            piece.color = [...pieceOptions.selectedPiece.color];
             pieceClicked = true;
           }
         }
