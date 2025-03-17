@@ -1,7 +1,7 @@
 import { Block, ColorOptions, PieceOptions } from "./models/models";
 import { XRES, YRES, LIGHT_COLORS, DARK_COLORS } from "./models/constants";
 
-const quiltCanvas = (p) => {
+const quiltCanvas = (p, onParamChange) => {
   let block;
   let mode = "design"; // "quilt"
   let selectedPieceOption = null;
@@ -10,6 +10,7 @@ const quiltCanvas = (p) => {
   let colorOptions;
 
   p.setup = () => {
+    console.log("Params on startup:", p.params);
     p.createCanvas(XRES, YRES);
     p.background(25);
 
@@ -29,6 +30,8 @@ const quiltCanvas = (p) => {
       };
 
       p.params.mirrorType.updateMirrorType = (mirrorType) => block.updateMirrorType(mirrorType);
+
+      p.params.color.setColor = (color) => (colorOptions.selectedColor.color = color);
 
       p.params.randomFill = () => {
         let lightColor = pieceOptions.options[0].color[0];
@@ -91,7 +94,21 @@ const quiltCanvas = (p) => {
         p.mouseY >= pieceOption.rect.top &&
         p.mouseY <= pieceOption.rect.bottom
       ) {
-        pieceOptions.selectOption(pieceOption);
+        pieceOptions.selectPiece(pieceOption);
+        pieceClicked = true;
+      }
+    }
+
+    // If colorOption clicked, select the colorOption
+    for (let colorOption of colorOptions.options) {
+      if (
+        p.mouseX >= colorOption.rect.left &&
+        p.mouseX <= colorOption.rect.right &&
+        p.mouseY >= colorOption.rect.top &&
+        p.mouseY <= colorOption.rect.bottom
+      ) {
+        colorOptions.selectColor(colorOption);
+        onParamChange("color", colorOption.color);
         pieceClicked = true;
       }
     }
@@ -115,8 +132,16 @@ const quiltCanvas = (p) => {
       }
     }
 
-    // if click didn't collide with anything, deselect the selected piece option
-    !pieceClicked && pieceOptions.selectOption(null);
+    // if clicked outside of the canvas, keep current selections
+    if (p.mouseX > XRES || p.mouseX < 0 || p.mouseY >= YRES || p.mouseY < 0) {
+      pieceClicked = true;
+    }
+
+    // if click didn't collide with anything in the canvas, deselect the selected piece option
+    if (!pieceClicked) {
+      pieceOptions.selectPiece(null);
+      colorOptions.selectColor(null);
+    }
   };
 
   p.keyReleased = () => {

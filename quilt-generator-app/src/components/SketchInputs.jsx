@@ -1,5 +1,6 @@
 // src/components/SketchInputs.jsx
 import React from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -14,6 +15,16 @@ import {
 import ColorInput from "./ColorInput";
 
 const SketchInputs = ({ params, onParamChange }) => {
+  console.log("In SketchInputs. Re-rendering / Params changed:", params);
+
+  // // Local state to track color input value
+  // const [colorValue, setColorValue] = useState(params.color.value);
+
+  // // Sync local state with params.color.value when params change
+  // useEffect(() => {
+  //   setColorValue(params.color.value);
+  // }, [params.color.value]);
+
   return (
     <Card className="quilt-inputs">
       <CardContent>
@@ -27,12 +38,6 @@ const SketchInputs = ({ params, onParamChange }) => {
           max={params.radius.max}
           valueLabelDisplay="auto"
           onChange={(e) => onParamChange("radius", e.target.value)}
-        /> */}
-
-        {/* circleColor */}
-        {/* <ColorInput
-          value={params.circleColor.value}
-          onChange={(newColor) => onParamChange("circleColor", newColor)}
         /> */}
 
         {/* viewMode */}
@@ -127,6 +132,18 @@ const SketchInputs = ({ params, onParamChange }) => {
             Invert Colors
           </Button>
         </Tooltip>
+
+        {/* circleColor */}
+        <Typography gutterBottom>Update Selected Color in Palette</Typography>
+        <ColorInput
+          value={params.color.value}
+          onChange={(newColor) => {
+            if (newColor !== null) {
+              params.color.setColor(newColor);
+              onParamChange("color", newColor);
+            }
+          }}
+        />
       </CardContent>
     </Card>
   );

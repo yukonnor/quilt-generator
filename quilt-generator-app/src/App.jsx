@@ -12,19 +12,14 @@ import P5Wrapper from "./components/P5Wrapper";
 import quiltCanvas from "./quilt-canvas";
 
 const sketchParams = {
-  radius: {
-    value: 50,
-    type: "slider",
-    min: 5,
-    max: 100,
-    label: "Circle Radius",
-  },
-  circleColor: { value: "#ff0000", type: "color", label: "Circle Color" },
+  viewMode: { value: "design", prevValue: null, setMode: null },
+  mirrorType: { value: 4, prevValue: null, updateMirrorType: null },
+  color: { value: "#ff0000", prevValue: null, setColor: null },
+
   // Placeholder for actions / functions / methods to be set in quiltCanvas
-  viewMode: { value: "design", setMode: null },
+  // Values not needed in state.
   randomFill: null,
   invertColors: null,
-  mirrorType: { value: 4, updateMirrorType: null },
   updateAllPieceColors: null,
 };
 
@@ -38,7 +33,8 @@ function App() {
       ...prevParams,
       [key]: {
         ...prevParams[key], // Preserve existing parameter structure
-        value: value, // Only update the 'value' field
+        prevValue: prevParams[key].value, // Set current value to prevValue
+        value: value, // Update the value
       },
     }));
   };
@@ -54,7 +50,7 @@ function App() {
             <SketchInputs params={params} onParamChange={handleParamChange} />
           </Grid>
           <Grid size={8}>
-            <P5Wrapper sketch={quiltCanvas} params={params} />
+            <P5Wrapper sketch={quiltCanvas} params={params} onParamChange={handleParamChange} />
           </Grid>
         </Grid>
       </Box>

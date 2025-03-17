@@ -403,7 +403,7 @@ export class PieceOptions {
     }
   }
 
-  selectOption(pieceOption) {
+  selectPiece(pieceOption) {
     this.selectedPiece = pieceOption;
   }
 }
@@ -446,6 +446,7 @@ export class ColorOptions {
   constructor(lightColors = LIGHT_COLORS, darkColors = DARK_COLORS) {
     this.coords = [BLOCK_COORDS[0], 8 * DEFAULT_PIECE_WIDTH + BLOCK_COORDS[1] * 2]; // [x,y] pos of color options block
     this.options = this.createColorOptions(lightColors, darkColors);
+    this.selectedColor = null;
   }
 
   createColorOptions(lightColors, darkColors) {
@@ -475,5 +476,23 @@ export class ColorOptions {
       // draw each color option block
       this.options[i].draw(p);
     }
+
+    // draw an outline around the selected color
+    if (this.selectedColor) {
+      let colorOption = this.selectedColor;
+      p.noFill();
+      p.stroke(HIGHLIGHT_COLOR); // RGB: Yellow   TODO: Use variable
+      p.strokeWeight(2);
+      p.rect(
+        colorOption.rect.left - 1,
+        colorOption.rect.top - 1,
+        colorOption.rect.width + 1,
+        colorOption.rect.width + 1
+      );
+    }
+  }
+
+  selectColor(colorOption) {
+    this.selectedColor = colorOption;
   }
 }
