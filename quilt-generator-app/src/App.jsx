@@ -12,9 +12,9 @@ import P5Wrapper from "./components/P5Wrapper";
 import quiltCanvas from "./quilt-canvas";
 
 const sketchParams = {
-  viewMode: { value: "design", prevValue: null, setMode: null },
-  mirrorType: { value: 4, prevValue: null, updateMirrorType: null },
-  color: { value: "#ff0000", prevValue: null, setColor: null },
+  viewMode: { value: "design", setMode: null },
+  mirrorType: { value: 4, updateMirrorType: null },
+  color: { value: "#ff0000", setColor: null, restoreColors: null },
 
   // Placeholder for actions / functions / methods to be set in quiltCanvas
   // Values not needed in state.
@@ -33,7 +33,6 @@ function App() {
       ...prevParams,
       [key]: {
         ...prevParams[key], // Preserve existing parameter structure
-        prevValue: prevParams[key].value, // Set current value to prevValue
         value: value, // Update the value
       },
     }));

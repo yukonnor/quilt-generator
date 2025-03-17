@@ -27,11 +27,20 @@ const quiltCanvas = (p, onParamChange) => {
     if (p.params) {
       p.params.viewMode.setMode = (clickedMode) => {
         mode = clickedMode;
+
+        // for safety, deselect selected pieces when switching modes
+        pieceOptions.selectPiece(null);
+        colorOptions.selectColor(null);
       };
 
       p.params.mirrorType.updateMirrorType = (mirrorType) => block.updateMirrorType(mirrorType);
 
-      p.params.color.setColor = (color) => (colorOptions.selectedColor.color = color);
+      p.params.color.setColor = (color) => {
+        if (colorOptions.selectedColor) {
+          colorOptions.selectedColor.color = color;
+        }
+      };
+      p.params.color.restoreColors = () => colorOptions.createColorOptions();
 
       p.params.randomFill = () => {
         let lightColor = pieceOptions.options[0].color[0];
@@ -159,6 +168,10 @@ const quiltCanvas = (p, onParamChange) => {
     // SWITCH MODES
     if (p.key === "q") {
       mode = mode === "design" ? "quilt" : "design";
+
+      // for safety, deselect selected pieces while in quilt mode
+      pieceOptions.selectPiece(null);
+      colorOptions.selectColor(null);
     }
     // SWITCH MIRROR TYPES
     if (p.key === "z") {

@@ -133,17 +133,28 @@ const SketchInputs = ({ params, onParamChange }) => {
           </Button>
         </Tooltip>
 
-        {/* circleColor */}
-        <Typography gutterBottom>Update Selected Color in Palette</Typography>
+        {/* color */}
+        <Typography gutterBottom>Update Color Palette</Typography>
         <ColorInput
           value={params.color.value}
           onChange={(newColor) => {
             if (newColor !== null) {
-              params.color.setColor(newColor);
               onParamChange("color", newColor);
             }
           }}
         />
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => params.color.setColor(params.color.value)}
+        >
+          Set Color
+        </Button>
+
+        <Typography gutterBottom></Typography>
+        <Button variant="outlined" color="primary" onClick={() => params.color.restoreColors()}>
+          Restore Original Color Palette
+        </Button>
       </CardContent>
     </Card>
   );

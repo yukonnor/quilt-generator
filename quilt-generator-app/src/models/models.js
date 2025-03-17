@@ -445,11 +445,12 @@ export class ColorOption {
 export class ColorOptions {
   constructor(lightColors = LIGHT_COLORS, darkColors = DARK_COLORS) {
     this.coords = [BLOCK_COORDS[0], 8 * DEFAULT_PIECE_WIDTH + BLOCK_COORDS[1] * 2]; // [x,y] pos of color options block
-    this.options = this.createColorOptions(lightColors, darkColors);
+    this.options = [];
     this.selectedColor = null;
+    this.createColorOptions(lightColors, darkColors);
   }
 
-  createColorOptions(lightColors, darkColors) {
+  createColorOptions(lightColors = LIGHT_COLORS, darkColors = DARK_COLORS) {
     let options = [];
 
     for (let i = 0; i < lightColors.length; i++) {
@@ -468,7 +469,7 @@ export class ColorOptions {
       options.push(newColorOption);
     }
 
-    return options;
+    this.options = options;
   }
 
   draw(p) {
