@@ -15,8 +15,6 @@ import {
 import ColorInput from "./ColorInput";
 
 const SketchInputs = ({ params, onParamChange }) => {
-  console.log("In SketchInputs. Re-rendering / Params changed:", params);
-
   // // Local state to track color input value
   // const [colorValue, setColorValue] = useState(params.color.value);
 

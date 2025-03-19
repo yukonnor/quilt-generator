@@ -14,20 +14,20 @@ import {
 export class Piece {
   constructor(
     type = "placeholder",
-    block_coords,
-    block_pos,
+    blockCoords,
+    blockPos,
     width,
     rotation = 0,
     color = [LIGHT_COLORS[0], DARK_COLORS[1]]
   ) {
     this.type = type; // "placeholder", "full_dark", "full_light", "diagonal"
-    this.block_coords = block_coords; // [x, y]
-    this.block_pos = block_pos; // [r, c]
+    this.blockCoords = blockCoords; // [x, y]
+    this.blockPos = blockPos; // [r, c]
     this.width = width;
     this.rotation = rotation; // 0, 1, 2, 3
     this.color = color; // [light color, dark color]
 
-    this.rect = this.create_rect();
+    this.rect = this.createRect();
     this.x = this.rect.left;
     this.y = this.rect.top;
 
@@ -40,18 +40,18 @@ export class Piece {
     */
   }
 
-  create_rect() {
+  createRect() {
     /* Create a helpful rect property with size and position attributes based off
        of the piece's position in a block  */
 
-    let x_adj = this.block_pos[1] * this.width;
-    let y_adj = this.block_pos[0] * this.width;
+    let xAdj = this.blockPos[1] * this.width;
+    let yAdj = this.blockPos[0] * this.width;
 
     let rect = {
-      left: this.block_coords[0] + x_adj,
-      right: this.block_coords[0] + x_adj + this.width,
-      top: this.block_coords[1] + y_adj,
-      bottom: this.block_coords[1] + y_adj + this.width,
+      left: this.blockCoords[0] + xAdj,
+      right: this.blockCoords[0] + xAdj + this.width,
+      top: this.blockCoords[1] + yAdj,
+      bottom: this.blockCoords[1] + yAdj + this.width,
       width: this.width,
       height: this.width,
     };
@@ -59,11 +59,11 @@ export class Piece {
     return rect;
   }
 
-  draw(p, provided_rect = null) {
+  draw(p, providedRect = null) {
     // console.log("Drawing piece");
 
     // If rect provided, use it. Otherwise use default rect.
-    let rect = provided_rect ? provided_rect : this.rect;
+    let rect = providedRect ? providedRect : this.rect;
 
     if (this.type === "placeholder") {
       p.noFill();
@@ -161,13 +161,11 @@ export class Block {
     this.rows = rows;
     this.cols = cols;
     this.coords = coords; // [x, y] of top left of block
-    this.x = coords[0];
-    this.y = coords[1];
     this.pieceWidth = pieceWidth;
     this.mirrorType = 4; // Available: 0, 1, 2, 3, 4
-
     this.pieces = this.initBlock(); // create a 2D array of placeholder pieces
-    this.randRotationOptions = [0, 1, 2, 3];
+    this.x = coords[0];
+    this.y = coords[1];
     this.width = this.cols * pieceWidth;
     this.height = this.rows * pieceWidth;
   }
@@ -178,7 +176,7 @@ export class Block {
     for (let r = 0; r < this.rows; r++) {
       pieces.push([]);
       for (let c = 0; c < this.cols; c++) {
-        pieces[r].push(new Piece("placeholder", [this.x, this.y], [r, c], this.pieceWidth));
+        pieces[r].push(new Piece("placeholder", this.coords, [r, c], this.pieceWidth));
       }
     }
     return pieces;
@@ -270,9 +268,8 @@ export class Block {
         // get a random piece type
         let pieceType = ["full_dark", "full_light", "diagonal"][Math.floor(Math.random() * 3)];
 
-        // get a random piece rotation (for diagonal pieces)
-        let rotation =
-          this.randRotationOptions[Math.floor(Math.random() * this.randRotationOptions.length)];
+        // get a random piece rotation (4 possible rotations for diagonal pieces)
+        let rotation = Math.floor(Math.random() * 4);
 
         this.pieces[r][c] = new Piece(
           pieceType,
@@ -333,8 +330,8 @@ export class Block {
         for (let row = 0; row < this.rows; row++) {
           for (let col = 0; col < this.cols; col++) {
             let piece = this.pieces[row][col];
-            const pieceX = blockX + piece.block_pos[1] * piece.width * QUILT_SCALE;
-            const pieceY = blockY + piece.block_pos[0] * piece.width * QUILT_SCALE;
+            const pieceX = blockX + piece.blockPos[1] * piece.width * QUILT_SCALE;
+            const pieceY = blockY + piece.blockPos[0] * piece.width * QUILT_SCALE;
             piece.drawAt(p, pieceX, pieceY, "quilt");
           }
         }

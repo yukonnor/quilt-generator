@@ -16,6 +16,7 @@ const quiltCanvas = (p, onParamChange) => {
 
     // Instantiate the block
     block = new Block(8, 8);
+    console.log("BLOCK:", block);
 
     // Create color options
     colorOptions = new ColorOptions(LIGHT_COLORS, DARK_COLORS);
@@ -124,6 +125,8 @@ const quiltCanvas = (p, onParamChange) => {
 
     // If block piece clicked, set it to the selected pieceOption
     if (pieceOptions.selectedPiece) {
+      console.log("There is a selected piece and I clicked.");
+      console.log(block.pieces);
       for (let row of block.pieces) {
         for (let piece of row) {
           if (
