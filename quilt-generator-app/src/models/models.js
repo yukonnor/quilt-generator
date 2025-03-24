@@ -14,22 +14,20 @@ import {
 export class Piece {
   constructor(
     type = "placeholder",
-    blockCoords,
-    blockPos,
+    x,
+    y,
     width,
     rotation = 0,
     color = [LIGHT_COLORS[0], DARK_COLORS[1]]
   ) {
     this.type = type; // "placeholder", "full_dark", "full_light", "diagonal"
-    this.blockCoords = blockCoords; // [x, y]
-    this.blockPos = blockPos; // [r, c]
+    this.x = x;
+    this.y = y;
     this.width = width;
     this.rotation = rotation; // 0, 1, 2, 3
     this.color = color; // [light color, dark color]
 
     this.rect = this.createRect();
-    this.x = this.rect.left;
-    this.y = this.rect.top;
 
     /*
     ROTATION:
@@ -44,14 +42,11 @@ export class Piece {
     /* Create a helpful rect property with size and position attributes based off
        of the piece's position in a block  */
 
-    let xAdj = this.blockPos[1] * this.width;
-    let yAdj = this.blockPos[0] * this.width;
-
     let rect = {
-      left: this.blockCoords[0] + xAdj,
-      right: this.blockCoords[0] + xAdj + this.width,
-      top: this.blockCoords[1] + yAdj,
-      bottom: this.blockCoords[1] + yAdj + this.width,
+      left: this.x,
+      right: this.x + this.width,
+      top: this.y,
+      bottom: this.y + this.width,
       width: this.width,
       height: this.width,
     };
@@ -69,15 +64,15 @@ export class Piece {
       p.noFill();
       p.stroke(HIGHLIGHT_COLOR); // RGB: Yellow   TODO: Use variable
       p.strokeWeight(2);
-      p.rect(rect.left, rect.top, rect.width, rect.width);
+      p.rect(rect.left, rect.top, rect.width, rect.height);
     } else if (this.type === "full_dark") {
       p.fill(this.color[1]);
       p.noStroke();
-      p.rect(rect.left, rect.top, rect.width, rect.width);
+      p.rect(rect.left, rect.top, rect.width, rect.height);
     } else if (this.type === "full_light") {
       p.fill(this.color[0]);
       p.noStroke();
-      p.rect(rect.left, rect.top, rect.width, rect.width);
+      p.rect(rect.left, rect.top, rect.width, rect.height);
     } else if (this.type === "diagonal") {
       this.drawDiagonal(p, rect);
     }
@@ -154,16 +149,37 @@ export class Piece {
     // Pass the temp_rect to the draw function
     this.draw(p, tempRect);
   }
+
+  serialize() {
+    return {
+      type: this.type,
+      x: this.x,
+      y: this.y,
+      width: this.width,
+      rotation: this.rotation,
+      color: this.color,
+    };
+  }
+
+  static deserialize(data) {
+    return new Piece(data.type, data.x, data.y, data.width, data.rotation, data.color);
+  }
 }
 
 export class Block {
-  constructor(rows = 8, cols = 8, coords = BLOCK_COORDS, pieceWidth = DEFAULT_PIECE_WIDTH) {
+  constructor(
+    rows = 8,
+    cols = 8,
+    coords = BLOCK_COORDS,
+    pieceWidth = DEFAULT_PIECE_WIDTH,
+    pieces = null
+  ) {
     this.rows = rows;
     this.cols = cols;
     this.coords = coords; // [x, y] of top left of block
     this.pieceWidth = pieceWidth;
     this.mirrorType = 4; // Available: 0, 1, 2, 3, 4
-    this.pieces = this.initBlock(); // create a 2D array of placeholder pieces
+    this.pieces = pieces ? pieces : this.initBlock();
     this.x = coords[0];
     this.y = coords[1];
     this.width = this.cols * pieceWidth;
@@ -174,10 +190,13 @@ export class Block {
     // Create a 2D array of placeholder pieces
     let pieces = [];
     for (let r = 0; r < this.rows; r++) {
-      pieces.push([]);
+      let rowPieces = [];
       for (let c = 0; c < this.cols; c++) {
-        pieces[r].push(new Piece("placeholder", this.coords, [r, c], this.pieceWidth));
+        let x = this.coords[0] + c * this.pieceWidth;
+        let y = this.coords[1] + r * this.pieceWidth;
+        rowPieces.push(new Piece("placeholder", x, y, this.pieceWidth, "white"));
       }
+      pieces.push(rowPieces);
     }
     return pieces;
   }
@@ -210,12 +229,14 @@ export class Block {
         [(r, c) => [r + this.rows / 2, this.cols - 1 - c], { 0: 1, 1: 0, 2: 3, 3: 2 }], // Bottom-right
       ],
       // Mirror Type 3 (horizontal mirror)
+      // TODO: Fix
       [
         [(r, c) => [r, c + this.cols / 2], { 0: 0, 1: 1, 2: 2, 3: 3 }], // Top-right
         [(r, c) => [this.rows - 1 - r, c], { 0: 3, 1: 2, 2: 1, 3: 0 }], // Bottom-left
         [(r, c) => [this.rows - 1 - r, c + this.cols / 2], { 0: 3, 1: 2, 2: 1, 3: 0 }], // Bottom-right
       ],
       // Mirror Type 4 (spiral)
+      // TODO: Fix
       [
         [(r, c) => [c, this.cols - 1 - r], { 0: 1, 1: 2, 2: 3, 3: 0 }], // Top-right
         [(r, c) => [this.rows - 1 - c, r], { 0: 3, 1: 0, 2: 1, 3: 2 }], // Bottom-left
@@ -240,14 +261,10 @@ export class Block {
     let piece = this.pieces[srcR][srcC];
     let newRotation = rotationMap[piece.rotation];
 
-    this.pieces[destR][destC] = new Piece(
-      piece.type,
-      [this.x, this.y],
-      [destR, destC],
-      piece.width,
-      newRotation,
-      piece.color
-    );
+    let x = this.coords[0] + destC * this.pieceWidth;
+    let y = this.coords[1] + destR * this.pieceWidth;
+
+    this.pieces[destR][destC] = new Piece(piece.type, x, y, piece.width, newRotation, piece.color);
   }
 
   updateMirrorType(newMirrorType) {
@@ -324,19 +341,70 @@ export class Block {
 
     for (let qr = 0; qr < quiltRows; qr++) {
       for (let qc = 0; qc < quiltCols; qc++) {
-        let blockX = quiltX + qc * this.width * QUILT_SCALE;
-        let blockY = quiltY + qr * this.width * QUILT_SCALE;
+        // Calculate where this block should start in quilt mode
+        const blockX = quiltX + qc * this.width * QUILT_SCALE;
+        const blockY = quiltY + qr * this.height * QUILT_SCALE;
 
         for (let row = 0; row < this.rows; row++) {
           for (let col = 0; col < this.cols; col++) {
             let piece = this.pieces[row][col];
-            const pieceX = blockX + piece.blockPos[1] * piece.width * QUILT_SCALE;
-            const pieceY = blockY + piece.blockPos[0] * piece.width * QUILT_SCALE;
+
+            // Scale the piece's position relative to the block's position
+            const pieceX = blockX + col * this.pieceWidth * QUILT_SCALE;
+            const pieceY = blockY + row * this.pieceWidth * QUILT_SCALE;
+
             piece.drawAt(p, pieceX, pieceY, "quilt");
           }
         }
       }
     }
+  }
+
+  saveToLocalStorage(blockName) {
+    if (!blockName) {
+      console.error("Block name is required to save.");
+      return;
+    }
+
+    // Retrieve existing saved blocks
+    let savedBlocks = JSON.parse(localStorage.getItem("savedBlocks")) || {};
+
+    // Save current block data under the given name
+    savedBlocks[blockName] = this.serialize(); // Convert block to a storable format
+    localStorage.setItem("savedBlocks", JSON.stringify(savedBlocks));
+
+    console.log(`Block "${blockName}" saved.`);
+  }
+
+  static loadFromLocalStorage(blockName) {
+    let savedBlocks = JSON.parse(localStorage.getItem("savedBlocks")) || {};
+    if (!savedBlocks[blockName]) {
+      console.error(`Block "${blockName}" not found.`);
+      return null;
+    }
+
+    return Block.deserialize(savedBlocks[blockName]); // Convert back to a Block instance
+  }
+
+  serialize() {
+    return {
+      rows: this.rows,
+      cols: this.cols,
+      coords: this.coords,
+      pieceWidth: this.pieceWidth,
+      pieces: this.pieces.map((piece) => piece.serialize()), // TODO: Add Piece serialize method
+      options: { mirrorType: this.mirrorType },
+    };
+  }
+
+  static deserialize(data) {
+    return new Block(
+      data.rows,
+      data.cols,
+      data.coords,
+      data.pieceWidth,
+      data.pieces.map((pieceData) => Piece.deserialize(pieceData)) // TODO: Deserialized pieces
+    );
   }
 }
 
@@ -367,7 +435,9 @@ export class PieceOptions {
         rotation = i - 2;
       }
 
-      let newPiece = new Piece(type, this.coords, [i, 0], DEFAULT_PIECE_WIDTH, rotation);
+      let x = this.coords[0];
+      let y = this.coords[1] + i * this.width;
+      let newPiece = new Piece(type, x, y, this.width, rotation);
       options.push(newPiece);
     }
 
