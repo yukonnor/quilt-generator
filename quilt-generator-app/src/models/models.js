@@ -382,11 +382,17 @@ export class Block {
   static loadFromLocalStorage(index) {
     let savedBlocks = JSON.parse(localStorage.getItem("savedBlocks")) || {};
     if (!savedBlocks[index]) {
-      console.error(`Block "${index}" not found.`);
+      console.error(`Block index ${index} not found in localStorage.`);
       return null;
     }
 
-    return Block.deserialize(savedBlocks[blockName]); // Convert back to a Block instance
+    console.log("Block data being loaded:", savedBlocks[index]);
+
+    const deserializedBlock = Block.deserialize(savedBlocks[index]);
+
+    console.log("deserializedBlock:", deserializedBlock);
+
+    return deserializedBlock; // Convert back to a Block instance
   }
 
   serialize() {
@@ -395,7 +401,7 @@ export class Block {
       cols: this.cols,
       coords: this.coords,
       pieceWidth: this.pieceWidth,
-      pieces: this.pieces.map((row) => row.map((piece) => piece.serialize())), // TODO: Add Piece serialize method
+      pieces: this.pieces.map((row) => row.map((piece) => piece.serialize())),
       options: { mirrorType: this.mirrorType },
     };
   }
@@ -406,7 +412,7 @@ export class Block {
       data.cols,
       data.coords,
       data.pieceWidth,
-      data.pieces.map((pieceData) => Piece.deserialize(pieceData)) // TODO: Deserialized pieces
+      data.pieces.map((row) => row.map((pieceData) => Piece.deserialize(pieceData)))
     );
   }
 }

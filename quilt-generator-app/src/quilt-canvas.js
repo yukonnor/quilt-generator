@@ -52,7 +52,7 @@ const quiltCanvas = (p, setParams) => {
           block.randomFill(lightColor, darkColor);
         },
         saveBlock: (name) => block.saveToLocalStorage(name),
-        loadBlock: (name) => block.loadFromLocalStorage(name),
+        loadBlock: (index) => (block = Block.loadFromLocalStorage(index)),
       }));
     }
   };

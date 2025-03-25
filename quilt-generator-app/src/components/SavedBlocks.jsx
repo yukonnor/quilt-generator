@@ -1,5 +1,16 @@
 import React from "react";
-import { Grid2, Card, CardContent, Button, Typography } from "@mui/material";
+import {
+  Grid2,
+  Card,
+  CardContent,
+  Button,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const SavedBlocks = ({
   savedBlocks,
@@ -27,19 +38,24 @@ const SavedBlocks = ({
           Save Block
         </Button>
 
-        <Grid2 container spacing={2} sx={{ maxHeight: 300, overflowY: "auto" }}>
-          {savedBlocks.map((block, index) => (
-            <Grid2 xs={6} sm={4} md={3} key={index}>
-              <Card variant="outlined">
-                <CardContent>
-                  <Typography variant="subtitle1">{block.name}</Typography>
-                  <Button variant="outlined" size="small" onClick={() => loadBlock(block)}>
-                    Load
-                  </Button>
-                </CardContent>
-              </Card>
-            </Grid2>
-          ))}
+        <Grid2 container spacing={2}>
+          <List>
+            {savedBlocks.map((block, index) => (
+              <ListItem
+                secondaryAction={
+                  <IconButton edge="end" aria-label="delete">
+                    <DeleteIcon />
+                  </IconButton>
+                }
+                key={block.name}
+              >
+                <ListItemText primary={block.name} />
+                <Button variant="outlined" size="small" onClick={() => loadBlock(index)}>
+                  Load
+                </Button>
+              </ListItem>
+            ))}
+          </List>
         </Grid2>
 
         <Button variant="outlined" color="secondary" onClick={() => downloadSavedBlocks(block)}>
