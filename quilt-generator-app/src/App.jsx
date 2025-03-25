@@ -76,6 +76,7 @@ function App() {
           <Grid size={12}>
             <SavedBlocks
               savedBlocks={savedBlocks}
+              setSavedBlocks={setSavedBlocks}
               saveBlock={params.saveBlock}
               loadBlock={params.loadBlock}
               downloadSavedBlocks={downloadSavedBlocks}
