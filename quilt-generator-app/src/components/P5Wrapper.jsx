@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import p5 from "p5";
 
-const P5Wrapper = ({ sketch, params, onParamChange }) => {
+const P5Wrapper = ({ sketch, params, setParams }) => {
   const sketchRef = useRef(null);
   const p5InstanceRef = useRef(null); // Keep a reference to the p5 instance
 
   // Initialize the p5 sketch once
   useEffect(() => {
-    const sketchInstance = (p) => sketch(p, onParamChange);
+    const sketchInstance = (p) => sketch(p, setParams);
     p5InstanceRef.current = new p5(sketchInstance, sketchRef.current);
 
     return () => {

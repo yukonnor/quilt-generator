@@ -43,10 +43,10 @@ const SketchInputs = ({ params, onParamChange }) => {
           <ToggleButtonGroup
             color="primary"
             exclusive
-            value={params.viewMode.value}
+            value={params.viewMode}
             onChange={(_, newMode) => {
               if (newMode !== null) {
-                params.viewMode.setMode(newMode);
+                params.setViewMode(newMode);
                 onParamChange("viewMode", newMode);
               }
             }}
@@ -63,10 +63,10 @@ const SketchInputs = ({ params, onParamChange }) => {
           <ToggleButtonGroup
             color="primary"
             exclusive
-            value={params.mirrorType.value}
+            value={params.mirrorType}
             onChange={(_, newMirrorType) => {
               if (newMirrorType !== null) {
-                params.mirrorType.updateMirrorType(newMirrorType);
+                params.updateMirrorType(newMirrorType);
                 onParamChange("mirrorType", newMirrorType);
               }
             }}
@@ -133,23 +133,19 @@ const SketchInputs = ({ params, onParamChange }) => {
         {/* color */}
         <Typography gutterBottom>Update Color Palette</Typography>
         <ColorInput
-          value={params.color.value}
+          value={params.color}
           onChange={(newColor) => {
             if (newColor !== null) {
               onParamChange("color", newColor);
             }
           }}
         />
-        <Button
-          variant="outlined"
-          color="primary"
-          onClick={() => params.color.setColor(params.color.value)}
-        >
+        <Button variant="outlined" color="primary" onClick={() => params.setColor(params.color)}>
           Set Color
         </Button>
 
         <Typography gutterBottom></Typography>
-        <Button variant="outlined" color="primary" onClick={() => params.color.restoreColors()}>
+        <Button variant="outlined" color="primary" onClick={() => params.restoreColors()}>
           Restore Original Color Palette
         </Button>
       </CardContent>

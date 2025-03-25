@@ -14,12 +14,14 @@ import P5Wrapper from "./components/P5Wrapper";
 import quiltCanvas from "./quilt-canvas";
 
 const sketchParams = {
-  viewMode: { value: "design", setMode: null },
-  mirrorType: { value: 4, updateMirrorType: null },
-  color: { value: "#ff0000", setColor: null, restoreColors: null },
-
-  // Placeholder for actions / functions / methods to be set in quiltCanvas
-  // Values not needed in state.
+  // Note: Actions / functions / methods set in quiltCanvas
+  viewMode: "design",
+  setViewMode: null,
+  mirrorType: 4,
+  updateMirrorType: null,
+  color: "#ff0000",
+  setColor: null,
+  restoreColors: null,
   randomFill: null,
   invertColors: null,
   updateAllPieceColors: null,
@@ -36,11 +38,10 @@ function App() {
     console.log("Param changed:", key, value);
     setParams((prevParams) => ({
       ...prevParams,
-      [key]: {
-        ...prevParams[key], // Preserve existing parameter structure
-        value: value, // Update the value
-      },
+      [key]: value,
     }));
+
+    console.log("New params:", params);
   };
 
   // Function to let users download blocks from Local Storage to JSON file
@@ -66,7 +67,7 @@ function App() {
             <SketchInputs params={params} onParamChange={handleParamChange} />
           </Grid>
           <Grid size={8}>
-            <P5Wrapper sketch={quiltCanvas} params={params} onParamChange={handleParamChange} />
+            <P5Wrapper sketch={quiltCanvas} params={params} setParams={setParams} />
           </Grid>
         </Grid>
       </Box>

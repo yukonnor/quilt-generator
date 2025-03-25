@@ -224,19 +224,17 @@ export class Block {
       ],
       // Mirror Type 2 (vertical mirror)
       [
-        [(r, c) => [r, this.cols - 1 - c], { 0: 1, 1: 0, 2: 2, 3: 3 }], // Top-right
+        [(r, c) => [r, this.cols - 1 - c], { 0: 1, 1: 0, 2: 3, 3: 2 }], // Top-right
         [(r, c) => [r + this.rows / 2, c], { 0: 0, 1: 1, 2: 2, 3: 3 }], // Bottom-left
         [(r, c) => [r + this.rows / 2, this.cols - 1 - c], { 0: 1, 1: 0, 2: 3, 3: 2 }], // Bottom-right
       ],
       // Mirror Type 3 (horizontal mirror)
-      // TODO: Fix
       [
         [(r, c) => [r, c + this.cols / 2], { 0: 0, 1: 1, 2: 2, 3: 3 }], // Top-right
         [(r, c) => [this.rows - 1 - r, c], { 0: 3, 1: 2, 2: 1, 3: 0 }], // Bottom-left
         [(r, c) => [this.rows - 1 - r, c + this.cols / 2], { 0: 3, 1: 2, 2: 1, 3: 0 }], // Bottom-right
       ],
       // Mirror Type 4 (spiral)
-      // TODO: Fix
       [
         [(r, c) => [c, this.cols - 1 - r], { 0: 1, 1: 2, 2: 3, 3: 0 }], // Top-right
         [(r, c) => [this.rows - 1 - c, r], { 0: 3, 1: 0, 2: 1, 3: 2 }], // Bottom-left
@@ -365,21 +363,26 @@ export class Block {
       console.error("Block name is required to save.");
       return;
     }
-
     // Retrieve existing saved blocks
-    let savedBlocks = JSON.parse(localStorage.getItem("savedBlocks")) || {};
+    let savedBlocks = JSON.parse(localStorage.getItem("savedBlocks")) || [];
 
     // Save current block data under the given name
-    savedBlocks[blockName] = this.serialize(); // Convert block to a storable format
+    let blockData = this.serialize();
+    blockData.name = blockName; // Store the block name inside the object
+
+    // Add new block to the array
+    savedBlocks.push(blockData);
+
+    // Save back to localStorage
     localStorage.setItem("savedBlocks", JSON.stringify(savedBlocks));
 
     console.log(`Block "${blockName}" saved.`);
   }
 
-  static loadFromLocalStorage(blockName) {
+  static loadFromLocalStorage(index) {
     let savedBlocks = JSON.parse(localStorage.getItem("savedBlocks")) || {};
-    if (!savedBlocks[blockName]) {
-      console.error(`Block "${blockName}" not found.`);
+    if (!savedBlocks[index]) {
+      console.error(`Block "${index}" not found.`);
       return null;
     }
 
@@ -392,7 +395,7 @@ export class Block {
       cols: this.cols,
       coords: this.coords,
       pieceWidth: this.pieceWidth,
-      pieces: this.pieces.map((piece) => piece.serialize()), // TODO: Add Piece serialize method
+      pieces: this.pieces.map((row) => row.map((piece) => piece.serialize())), // TODO: Add Piece serialize method
       options: { mirrorType: this.mirrorType },
     };
   }

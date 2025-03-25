@@ -1,7 +1,7 @@
 import { Block, ColorOptions, PieceOptions } from "./models/models";
 import { XRES, YRES, LIGHT_COLORS, DARK_COLORS } from "./models/constants";
 
-const quiltCanvas = (p, onParamChange) => {
+const quiltCanvas = (p, setParams) => {
   let block;
   let mode = "design"; // "quilt"
   let selectedPieceOption = null;
@@ -10,13 +10,13 @@ const quiltCanvas = (p, onParamChange) => {
   let colorOptions;
 
   p.setup = () => {
-    console.log("Params on startup:", p.params);
+    // console.log("Params on startup:", p.params);
     p.createCanvas(XRES, YRES);
     p.background(25);
 
     // Instantiate the block
     block = new Block(8, 8);
-    console.log("BLOCK:", block);
+    // console.log("BLOCK:", block);
 
     // Create color options
     colorOptions = new ColorOptions(LIGHT_COLORS, DARK_COLORS);
@@ -26,39 +26,35 @@ const quiltCanvas = (p, onParamChange) => {
 
     // Assign functions to action buttons found in p.params so they can be accessed externally
     if (p.params) {
-      p.params.viewMode.setMode = (clickedMode) => {
-        mode = clickedMode;
-
-        // for safety, deselect selected pieces when switching modes
-        pieceOptions.selectPiece(null);
-        colorOptions.selectColor(null);
-      };
-
-      p.params.mirrorType.updateMirrorType = (mirrorType) => block.updateMirrorType(mirrorType);
-
-      p.params.color.setColor = (color) => {
-        if (colorOptions.selectedColor) {
-          colorOptions.selectedColor.color = color;
-        }
-      };
-      p.params.color.restoreColors = () => colorOptions.createColorOptions();
-
-      p.params.randomFill = () => {
-        let lightColor = pieceOptions.options[0].color[0];
-        let darkColor = pieceOptions.options[0].color[1];
-        block.randomFill(lightColor, darkColor);
-      };
-
-      p.params.invertColors = () => block.invertColors();
-
-      p.params.updateAllPieceColors = () => {
-        let lightColor = pieceOptions.options[0].color[0];
-        let darkColor = pieceOptions.options[0].color[1];
-        block.updateAllPieceColors(lightColor, darkColor);
-      };
+      setParams((prevParams) => ({
+        ...prevParams,
+        setViewMode: (clickedMode) => {
+          mode = clickedMode;
+          pieceOptions.selectPiece(null);
+          colorOptions.selectColor(null);
+        },
+        updateMirrorType: (mirrorType) => block.updateMirrorType(mirrorType),
+        setColor: (color) => {
+          if (colorOptions.selectedColor) {
+            colorOptions.selectedColor.color = color;
+          }
+        },
+        restoreColors: () => colorOptions.createColorOptions(),
+        invertColors: () => block.invertColors(),
+        updateAllPieceColors: () => {
+          let lightColor = pieceOptions.options[0].color[0];
+          let darkColor = pieceOptions.options[0].color[1];
+          block.updateAllPieceColors(lightColor, darkColor);
+        },
+        randomFill: () => {
+          let lightColor = pieceOptions.options[0].color[0];
+          let darkColor = pieceOptions.options[0].color[1];
+          block.randomFill(lightColor, darkColor);
+        },
+        saveBlock: (name) => block.saveToLocalStorage(name),
+        loadBlock: (name) => block.loadFromLocalStorage(name),
+      }));
     }
-
-    console.log("colorOptions in setup:", colorOptions);
   };
 
   p.draw = () => {
