@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   Button,
-  Typography,
   List,
   ListItem,
   ListItemText,
@@ -12,11 +11,14 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
+import SavedBlocksList from "./SavedBlocksList";
+
 const SavedBlocks = ({
   savedBlocks,
   setSavedBlocks,
   saveBlock,
   loadBlock,
+  deleteBlock,
   downloadSavedBlocks,
 }) => {
   console.log("savedBlocks:", savedBlocks);
@@ -30,6 +32,21 @@ const SavedBlocks = ({
     setSavedBlocks(updatedSavedBlocks);
   };
 
+  const handleDeleteBlock = (index) => {
+    try {
+      const success = deleteBlock(index); // Returns `true` or `false` from deleteBlock
+      if (!success) {
+        throw new Error("Delete operation failed.");
+      }
+
+      const updatedBlocks = savedBlocks.filter((_, i) => i !== index);
+      setSavedBlocks(updatedBlocks);
+    } catch (error) {
+      console.error("Error deleting block:", error);
+      alert("Something went wrong while deleting the block.");
+    }
+  };
+
   return (
     <Card className="quilt-inputs">
       <CardContent>
@@ -38,27 +55,13 @@ const SavedBlocks = ({
           Save Block
         </Button>
 
-        <Grid2 container spacing={2}>
-          <List>
-            {savedBlocks.map((block, index) => (
-              <ListItem
-                secondaryAction={
-                  <IconButton edge="end" aria-label="delete">
-                    <DeleteIcon />
-                  </IconButton>
-                }
-                key={block.name}
-              >
-                <ListItemText primary={block.name} />
-                <Button variant="outlined" size="small" onClick={() => loadBlock(index)}>
-                  Load
-                </Button>
-              </ListItem>
-            ))}
-          </List>
-        </Grid2>
+        <SavedBlocksList
+          savedBlocks={savedBlocks}
+          loadBlock={loadBlock}
+          handleDeleteBlock={handleDeleteBlock}
+        />
 
-        <Button variant="outlined" color="secondary" onClick={() => downloadSavedBlocks(block)}>
+        <Button variant="outlined" color="secondary" onClick={() => downloadSavedBlocks()}>
           Download Saved Blocks
         </Button>
       </CardContent>

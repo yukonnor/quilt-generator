@@ -53,6 +53,7 @@ const quiltCanvas = (p, setParams) => {
         },
         saveBlock: (name) => block.saveToLocalStorage(name),
         loadBlock: (index) => (block = Block.loadFromLocalStorage(index)),
+        deleteBlock: (index) => Block.deleteFromLocalStorage(index),
       }));
     }
   };

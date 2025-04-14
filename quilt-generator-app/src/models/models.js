@@ -395,24 +395,43 @@ export class Block {
     return deserializedBlock; // Convert back to a Block instance
   }
 
+  static deleteFromLocalStorage(index) {
+    try {
+      let savedBlocks = JSON.parse(localStorage.getItem("savedBlocks")) || [];
+      if (index < 0 || index >= savedBlocks.length) {
+        console.warn("Invalid index for deletion.");
+        return false;
+      }
+
+      savedBlocks.splice(index, 1);
+      localStorage.setItem("savedBlocks", JSON.stringify(savedBlocks));
+      return true;
+    } catch (err) {
+      console.error("Failed to delete block from localStorage:", err);
+      return false;
+    }
+  }
+
   serialize() {
     return {
-      rows: this.rows,
-      cols: this.cols,
-      coords: this.coords,
-      pieceWidth: this.pieceWidth,
-      pieces: this.pieces.map((row) => row.map((piece) => piece.serialize())),
-      options: { mirrorType: this.mirrorType },
+      block: {
+        rows: this.rows,
+        cols: this.cols,
+        coords: this.coords,
+        pieceWidth: this.pieceWidth,
+        pieces: this.pieces.map((row) => row.map((piece) => piece.serialize())),
+        options: { mirrorType: this.mirrorType },
+      },
     };
   }
 
   static deserialize(data) {
     return new Block(
-      data.rows,
-      data.cols,
-      data.coords,
-      data.pieceWidth,
-      data.pieces.map((row) => row.map((pieceData) => Piece.deserialize(pieceData)))
+      data.block.rows,
+      data.block.cols,
+      data.block.coords,
+      data.block.pieceWidth,
+      data.block.pieces.map((row) => row.map((pieceData) => Piece.deserialize(pieceData)))
     );
   }
 }

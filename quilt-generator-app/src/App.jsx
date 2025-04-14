@@ -27,6 +27,7 @@ const sketchParams = {
   updateAllPieceColors: null,
   saveBlock: null,
   loadBlock: null,
+  deleteBlock: null,
 };
 
 function App() {
@@ -79,6 +80,7 @@ function App() {
               setSavedBlocks={setSavedBlocks}
               saveBlock={params.saveBlock}
               loadBlock={params.loadBlock}
+              deleteBlock={params.deleteBlock}
               downloadSavedBlocks={downloadSavedBlocks}
             />
           </Grid>
