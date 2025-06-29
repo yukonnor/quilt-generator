@@ -15,7 +15,7 @@ const quiltCanvas = (p, setParams) => {
     p.background(25);
 
     // Instantiate the block
-    block = new Block(8, 8);
+    block = new Block(6, 6);
     // console.log("BLOCK:", block);
 
     // Create color options
@@ -75,10 +75,10 @@ const quiltCanvas = (p, setParams) => {
   p.mousePressed = () => {
     let pieceClicked = false;
 
-    if (!colorOptions || !colorOptions.options) {
-      console.warn("colorOptions is not ready yet.");
-      return;
-    }
+    // if (!colorOptions || !colorOptions.options) {
+    //   console.warn("colorOptions is not ready yet.");
+    //   return;
+    // }
 
     // If colorOption clicked, update pieceOption colors
     for (let colorOption of colorOptions.options) {

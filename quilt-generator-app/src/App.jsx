@@ -11,7 +11,8 @@ import SketchInputs from "./components/SketchInputs";
 import P5Wrapper from "./components/P5Wrapper";
 
 // Import sketches
-import quiltCanvas from "./quilt-canvas";
+import quiltCanvas from "./quiltCanvas";
+import blockPreviewCanvas from "./blockPreviewCanvas";
 
 const sketchParams = {
   // Note: Actions / functions / methods set in quiltCanvas
@@ -33,6 +34,7 @@ const sketchParams = {
 function App() {
   const [params, setParams] = useState(sketchParams);
   const [savedBlocks, setSavedBlocks] = useLocalStorageState("savedBlocks", []);
+  const [selectedSavedBlock, setSelectedSavedBlock] = useState(savedBlocks[0]);
 
   // Handle changes to any parameter by key
   const handleParamChange = (key, value) => {
@@ -74,7 +76,7 @@ function App() {
       </Box>
       <Box sx={{ flexGrow: 1 }} id="saved-blocks">
         <Grid container spacing={2}>
-          <Grid size={12}>
+          <Grid size={4}>
             <SavedBlocks
               savedBlocks={savedBlocks}
               setSavedBlocks={setSavedBlocks}
@@ -82,6 +84,14 @@ function App() {
               loadBlock={params.loadBlock}
               deleteBlock={params.deleteBlock}
               downloadSavedBlocks={downloadSavedBlocks}
+            />
+          </Grid>
+          <Grid size={8}>
+            <P5Wrapper
+              sketch={blockPreviewCanvas}
+              params={params}
+              setParams={setParams}
+              savedBlock={selectedSavedBlock}
             />
           </Grid>
         </Grid>
